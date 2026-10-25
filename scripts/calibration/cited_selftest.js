@@ -268,6 +268,10 @@ const expect = (name, cond) => { console.log((cond ? 'ok   ' : 'FAIL ') + name);
   expect('uncovered: NR goals and assists are stated as not recorded, never as null', !/null/.test(gkPack.facts.map(f => f.text).join(' ')) && gkPack.facts.some(f => /goals not recorded \(the page prints NR\) and assists not recorded/.test(f.text)));
   const nrNotes = C.notesFacts(Object.assign({}, osiP, { goals: null, assists: null, shots_total: 50 }));
   expect('uncovered: a card with no goals recorded says so and skips the goals-from-shots fact', nrNotes.facts.some(f => /goals not recorded \(the card prints NR\)/.test(f.text)) && !nrNotes.facts.some(f => /null/.test(f.text)) && !nrNotes.facts.some(f => / goals from \d+ shots$/.test(f.text)));
+  // pass 4 (2026-10-25)
+  const dimP = pack.facts.find(f => f.side === 'A' && /Progression: \d+(st|nd|rd|th) percentile/.test(f.text)), dimV = dimP.text.match(/(\d+)(?:st|nd|rd|th) percentile/)[1];
+  expect('writer: a percentile called a percentage is deleted; called a percentile it passes', C.numbersOk(`His Progression at ${dimV} per cent is high.`, dimP.text, [dimP], pack.facts).some(w => /called a percentage/.test(w)) && C.numbersOk(`His Progression at the ${dimV}th percentile is high.`, dimP.text, [dimP], pack.facts).length === 0);
+  expect('tools (pass 4): "Per 90 minutes he records 0.53 goals" is a rate; "nearly four times Candreva\'s rate" is not appearances; "30 plus goals" is over 30', PC2.extractNumbers('Per 90 minutes he records 0.53 goals')[0].unit === 'per90' && PC2.extractNumbers('nearly four times Candreva\'s rate')[0].unit === null && PC2.extractNumbers('both scoring 30 plus goals')[0].qualifier === 'over');
   console.log(fails ? `\nCITED SELFTEST FAIL (${fails})` : '\nCITED SELFTEST PASS');
   process.exit(fails ? 1 : 0);
 })();

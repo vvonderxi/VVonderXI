@@ -147,9 +147,13 @@ function extractNumbers(text) {
         is two rates with one "per 90", so a decimal bound to goals, assists or shots in a clause that says per 90
         is a rate.  */
     if (/^(out|of)$/.test(ahead[0] || '') && ahead[1] === (ahead[0] === 'out' ? 'of' : '100') && /^(100)$/.test(ahead[0] === 'out' ? (ahead[2] || '') : ahead[1])) unit = 'reliability';
-    if (/^(goals|assists|shots)$/.test(unit || '') && !Number.isInteger(v) && /\bper (90|ninety)\b/.test(clause)) unit = 'per90';
+    if (/^(goals|assists|shots)$/.test(unit || '') && !Number.isInteger(v) && /\bper (90|ninety)\b/i.test(clause)) unit = 'per90';   // case-insensitive since pass 4 ("Per 90 minutes he records 0.53 goals")
+    /*  PASS 4 SHAPES (2026-10-25): "nearly four times Candreva's rate" is a multiplier, not appearances; "30 plus goals"
+        carries a qualifier the way "over 30" does.  */
+    if (unit === 'apps' && ahead[0] === 'times' && /^(the|his|her|their|that|a|an|as|more|what|[a-z]+'s)$/.test(ahead[1] || '')) unit = null;
     if (ordinal && unit !== 'percentile') { k = j; continue; }                    // the 41st goal
     let qual = (back.slice(-2).join(' ').match(/(over|more than|almost|nearly|roughly|about|around|some|under|close to)$/) || [])[1] || null;
+    if (!qual && ahead[0] === 'plus') qual = 'over';   // "30 plus goals" (pass 4, 2026-10-25)
     if (qual === 'over' && /^(more|fewer|extra|additional|less)$/.test(ahead[0] || '')) qual = null;   // "over two more appearances" is a span (2026-10-24)
     out.push({ value: v, raw: t.slice(tk.i, toks[j].end), unit, qualifier: qual, clause, bind });
     k = j;
@@ -282,6 +286,9 @@ function checkNumbers(prose, ev) {
           comparison does not, so the request carries it for notes only; a reader of either page can still find the
           decimal on the card. Rates are exact decimals, so the whole-page set is a safe check for them.  */
       if ((n.unit === 'per90' || n.unit === 'passes90') && onPage.has(n.value)) { unbound.push({ raw: n.raw, clause: n.clause, crossUnit: n.unit }); continue; }
+      /*  A DECIMAL BOUND TO A COUNT WORD THAT EQUALS A PRINTED RATE IS THE RATE (pass 4: "that is 0.53 goals and 1.31 shots
+          on target", the per 90 elided altogether).  */
+      if (/^(goals|assists|shots)$/.test(n.unit) && !Number.isInteger(n.value) && (F.per90 || new Set()).has(n.value)) { unbound.push({ raw: n.raw, clause: n.clause, crossUnit: 'per90' }); continue; }
       const set = derived(F, n.unit);
       if (!set.size) { if (!rescue()) flags.push(why(n.unit, `is a figure of a kind (${n.unit}) no page shows for this pair`)); else unbound.push({ raw: n.raw, clause: n.clause, crossUnit: n.unit }); continue; }
       const ok = set.has(n.value) || (n.qualifier ? near(n.value, set, n.qualifier) : (n.unit === 'shots' || n.unit === 'minutes') && near(n.value, set, null) && !Number.isInteger(n.value));

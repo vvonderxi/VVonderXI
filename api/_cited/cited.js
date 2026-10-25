@@ -362,9 +362,14 @@ function numbersOk(sentence, citedText, citedFacts, allFacts) {
       Tags and honours vary per card and a subset cannot be checked without the total, so those stay exact.
       The asymmetry is deliberate: a fixed visible set may be subset, a variable one may not.  */
   const dimTotal = (per['dimension/A'] || 0) + (per['dimension/B'] || 0) + (per['reliability/A'] || 0) + (per['reliability/B'] || 0);
+  /*  A PERCENTILE IS NOT A PERCENTAGE (pass 4, 2026-10-25: "Hazard's Progression at 97 per cent" for the 97th percentile).
+      A number the sentence calls a percentage must be a percentage in the cited facts (goal conversion, Reliability
+      out of 100); one that exists only as a percentile is deleted.  */
+  const pctIn = new Set(); for (const f of citedFacts || []) (String(f.text).match(/(\d+)%|Reliability: (\d+) out of 100/g) || []).forEach(m => pctIn.add(+m.replace(/\D/g, '')));
+  const pctWrong = PC.extractNumbers(sentence).filter(x => x.unit === 'pct' && !pctIn.has(x.value) && (citedFacts || []).some(f => new RegExp('\\b' + x.value + '(?:st|nd|rd|th) percentile').test(f.text))).map(x => x.raw + ' called a percentage, it is a percentile');
   const bad = PC.extractNumbers(sentence).filter(x => x.unit === 'dimensions' ? !(x.value >= 1 && x.value <= dimTotal)
     : BOUND[x.unit] ? !(kindSet[BOUND[x.unit]] || new Set()).has(x.value) : !vals.has(x.value)).map(x => x.raw);
-  return bad;
+  return bad.concat(pctWrong);
 }
 async function judgeDraft(pack, draft, narrow = narrowCheck) {
   const ids = new Set(pack.facts.map(f => f.id));
