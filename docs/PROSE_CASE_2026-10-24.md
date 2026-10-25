@@ -59,6 +59,19 @@ Do not flip now; it would ship the old writer. Approve the port with the proof s
 
 **The comparison the decision rests on, in one sentence:** seven invented facts a piece and zero of twelve pieces passing on 17 October, against zero invented facts in 706 sentences and 36 of 36 pieces shipping on 25 October, through the serving path, with the units and the sample stated above.
 
+## THE NOTES' TWO PASSES ON THE RULES THEY WOULD SHIP (2026-10-25, passes 4 and 5, 13:09 and 14:10 UTC, the same build)
+
+The card's glance line, Scout Report and Notes were gated on two clean passes on the rules they would actually ship, since the cabinet rule and the NR wording landed after passes 2 and 3. Both passes ran through the branch preview built from `8cb7fbe`, whose code is byte for byte the Production deploy `d17e3fe` (the difference is documentation), with the sample rows cleared between.
+
+| | Pass 4 | Pass 5 |
+|---|---|---|
+| **Notes, four cards** | **4 of 4, 93 sentences, 2 flags (both the tools)** | **4 of 4, 87 sentences, 0 flags** |
+| Verdicts, fourteen pairs | 13 of 14 (Kane v Mertens, share rule, fair) | 13 of 14 (De Bruyne v Pogba, "16 assists lead the league" refused twice, fair) |
+| Seconds a notes piece | 19 to 23 | 18 to 20 |
+| Flags in all, real on my reading | 7, one wording fault ("97 per cent" for a percentile; a writer rule in the repo since `17be70e`, not on this build) | 3, none |
+
+The notes read like the card: "Osimhen, 24, scored 26 goals for Napoli in Serie A in 22/23, earning the Golden Boot." The two verdict losses are the rules working on writer faults, one in fourteen each pass, and verdicts are live regardless. Lists: `fresh_endpoint_pass_4_lists.md`, `fresh2_endpoint_pass_4_lists.md`, `fresh_endpoint_pass_5_lists.md`, `fresh2_endpoint_pass_5_lists.md`. **The flip to `on` is `vercel env add VV_PROSE production --force` with the value `on`, then `vercel redeploy` of the production deployment; no push is needed, since Production already runs the code these passes ran.** The percentile-is-not-a-percentage rule is the one closure that is in the repo and not on that build; carrying it means a push and a changed rule set.
+
 ## OPERATIONS: THE PAIRS THE SAMPLE DOES NOT COVER, THE KILL SWITCH, THE SPEND ALARM (2026-10-25, Lucas's three questions before the decision)
 
 **1. What the code does on a pair the sample never saw, read from the code, not from runs.**

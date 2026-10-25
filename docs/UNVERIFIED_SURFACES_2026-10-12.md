@@ -685,6 +685,8 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
    **FLIPPED 2026-10-25 13:03 UTC (Lucas): `VV_PROSE=verdicts` on Production, `d17e3fe` live, verdicts served by the
    cited writer, notes still off. The first live generation shipped in 26.9 seconds. The record is CLAUDE.md's
    present-state block and §F; the evidence is the case document's before-and-after.**
+   **NOTES, PASSES 4 AND 5 ON THE PRODUCTION CODE: 4 of 4 and 4 of 4, 180 sentences, no false fact; the flip to `on`
+   is Lucas's (case document, "THE NOTES' TWO PASSES").**
    **THE COUNT-FILTER AUDIT (Lucas's question: did dropping the judge's count claims blind it to anything true?).**
    Every shipped sentence in the four pass files that the filter would drop was re-judged by Sonnet against the
    page: 139 sentences, 9 judged unsupported, and all 9 are the judge's own error, the same two shapes: it counts
