@@ -87,7 +87,11 @@ function sideFacts(line, P) {
   const min = g(/(\d+) min \//), apps = g(/min \/ (\d+) apps/);
   F.push(`${surname} (${short}), ${season} season, ${club}, ${league}, ${pos}, age ${age}`);
   if (vv) F.push(scoreFact(surname, vv));
-  F.push(`${surname}: ${goals} goals and ${assists} assists in ${min} minutes over ${apps} appearances`);
+  /*  A SEASON WHOSE GOALS OR ASSISTS WERE NEVER RECORDED (pre-2015 on some leagues) arrives as "NR goals NR assists"
+      and used to become "null goals and null assists" (found 2026-10-25 reading the code for the pairs the sample
+      does not cover, not in a run). It is stated as the page prints it: not recorded.  */
+  const nr = (v, what) => v != null ? `${v} ${what}` : `${what} not recorded (the page prints NR)`;
+  F.push(`${surname}: ${nr(goals, 'goals')} and ${nr(assists, 'assists')} in ${min} minutes over ${apps} appearances`);
   for (const d of ['Goal Threat', 'Creation', 'Progression', 'Defensive']) {
     const x = g(new RegExp(d + ' (\\d+)'));
     if (x != null) F.push(`${surname}'s ${d}: ${ord(x)} percentile among ${pos} seasons`);
@@ -143,13 +147,14 @@ function notesFacts(player) {
   const P = player, F = [], nm = P.player_name;
   F.push(`${nm}, ${P.season} season, ${P.club}, ${P.league}, ${P.position}, age ${P.age}`);
   if (P.rt != null) F.push(scoreFact(nm, P.rt));   // P.band is ignored on purpose: see scoreFact
-  F.push(`${nm}: ${P.goals} goals and ${P.assists} assists in ${P.minutes} minutes over ${P.appearances} appearances`);
+  const nrN = (v, what) => v != null ? `${v} ${what}` : `${what} not recorded (the card prints NR)`;
+  F.push(`${nm}: ${nrN(P.goals, 'goals')} and ${nrN(P.assists, 'assists')} in ${P.minutes} minutes over ${P.appearances} appearances`);
   const vals = (P.dimensions && P.dimensions.values) || {}, NAMES = { goalThreat: 'Goal Threat', creation: 'Creation', progression: 'Progression', defensive: 'Defensive' };
   for (const [k, x] of Object.entries(vals)) {
     if (x.percentile_in_pool != null) F.push(`${nm}'s ${NAMES[k] || k}: ${ord(x.percentile_in_pool)} percentile among ${P.pool} seasons`);
     if (x.pct_of_full_season != null) F.push(reliabilityFact(nm, x.pct_of_full_season));
   }
-  if (P.shots_total != null) F.push(`${nm}: ${P.goals} goals from ${P.shots_total} shots`);
+  if (P.shots_total != null && P.goals != null) F.push(`${nm}: ${P.goals} goals from ${P.shots_total} shots`);
   if (P.key_passes_per90 != null) F.push(`${nm}: ${Number(P.key_passes_per90).toFixed(2)} key passes per 90 minutes`);
   for (const h of (P.honours || [])) F.push(honourFact(h.honour, h.won_by));
   for (const h of (P.cabinet || [])) F.push(cabinetFact(nm, h.honour, h.year, h.won_by));

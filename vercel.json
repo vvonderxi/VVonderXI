@@ -2,6 +2,7 @@
   "cleanUrls": true,
   "fluid": true,
   "functions": { "api/analyse.js": { "maxDuration": 120 } },
+  "crons": [{ "path": "/api/spend-check", "schedule": "30 23 * * *" }],
   "headers": [
     {
       "source": "/og-image.png",

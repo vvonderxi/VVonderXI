@@ -261,6 +261,13 @@ const expect = (name, cond) => { console.log((cond ? 'ok   ' : 'FAIL ') + name);
   const jcb = await C.judgeDraft(pack, { p1: [ok('The Golden Boot sits in his cabinet from this season.', [honA.id]), ok('The Golden Boot is this season\'s honour.', [honA.id])] }, narrow);
   expect('cabinet word: on a comparison "cabinet" is deleted; the same honour without the word passes', jcb.units[0].why.some(w => /says cabinet without citing a Cabinet fact/.test(w)) && !jcb.units[1].why.some(w => /cabinet/.test(w)) && jcab.units[0].kept);
   expect('tools (pass 3): "at 33 percent" is a share, "shots on target 55 times" are shots, "four point to" is not points', PC2.extractNumbers('his goal conversion stands at 33 percent')[0].unit === 'pct' && PC2.extractNumbers('He placed his shots on target 55 times')[0].unit === 'shots' && PC2.extractNumbers('six tags in all against Kane\'s four point to a sharper edge').map(x => x.unit).join() === 'tags,' && PC2.extractNumbers('two points above Messi')[0].unit === 'points');
+  // the pairs the sample does not cover (2026-10-25, read from the code): a keeper gets no prose; NR goals are stated as not recorded, never "null"
+  const gkLine = 'Player B: Neuer (M. Neuer), 19/20, Bayern [Bundesliga], pos GK, age 33, VV NR, NR goals NR assists; dimensions: Reliability 90; 2900 min / 33 apps';
+  const gkPack = C.verdictFactsFrom(dbLines[0], gkLine, 'The Index cannot separate these two.');
+  expect('uncovered: a keeper on either side makes the pack a keeper pack, which runPiece answers with no prose and no model call', gkPack.keeper === true);
+  expect('uncovered: NR goals and assists are stated as not recorded, never as null', !/null/.test(gkPack.facts.map(f => f.text).join(' ')) && gkPack.facts.some(f => /goals not recorded \(the page prints NR\) and assists not recorded/.test(f.text)));
+  const nrNotes = C.notesFacts(Object.assign({}, osiP, { goals: null, assists: null, shots_total: 50 }));
+  expect('uncovered: a card with no goals recorded says so and skips the goals-from-shots fact', nrNotes.facts.some(f => /goals not recorded \(the card prints NR\)/.test(f.text)) && !nrNotes.facts.some(f => /null/.test(f.text)) && !nrNotes.facts.some(f => / goals from \d+ shots$/.test(f.text)));
   console.log(fails ? `\nCITED SELFTEST FAIL (${fails})` : '\nCITED SELFTEST PASS');
   process.exit(fails ? 1 : 0);
 })();
