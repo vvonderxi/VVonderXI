@@ -137,6 +137,12 @@ function extractNumbers(text) {
       else if ((/^(at|aged)$/.test(bw[bw.length - 1] || '') || (bw.slice(-2).join(' ') === 'age of')) && v >= 14 && v <= 45) { unit = 'years'; bind = 'age'; }   // "Iconic at 91" is a score, not an age
       else { for (let q = bw.length - 1; q >= 0 && !unit; q--) unit = unitOf(bw[q], bw[q + 1]); if (unit) bind = 'back'; }
     }
+    /*  TWO SHAPES FROM PASS 2 OF THE PROOF RUNS (2026-10-25): "landed at 39 out of 100" is Reliability, not an age
+        (the "at N" rule fired with no dimension word in the four-word window); "0.42 goals and 0.35 assists per 90"
+        is two rates with one "per 90", so a decimal bound to goals, assists or shots in a clause that says per 90
+        is a rate.  */
+    if (/^(out|of)$/.test(ahead[0] || '') && ahead[1] === (ahead[0] === 'out' ? 'of' : '100') && /^(100)$/.test(ahead[0] === 'out' ? (ahead[2] || '') : ahead[1])) unit = 'reliability';
+    if (/^(goals|assists|shots)$/.test(unit || '') && !Number.isInteger(v) && /\bper (90|ninety)\b/.test(clause)) unit = 'per90';
     if (ordinal && unit !== 'percentile') { k = j; continue; }                    // the 41st goal
     let qual = (back.slice(-2).join(' ').match(/(over|more than|almost|nearly|roughly|about|around|some|under|close to)$/) || [])[1] || null;
     if (qual === 'over' && /^(more|fewer|extra|additional|less)$/.test(ahead[0] || '')) qual = null;   // "over two more appearances" is a span (2026-10-24)

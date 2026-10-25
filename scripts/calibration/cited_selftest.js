@@ -257,6 +257,7 @@ const expect = (name, cond) => { console.log((cond ? 'ok   ' : 'FAIL ') + name);
   expect('tools: the honours count stops at the PROOF segment (Ibrahimović holds three, not four)', PC2.pageFigures(ibEv).sides[0].honours === 3 && PC2.checkNumbers('Ibrahimović holds three honours this season', ibEv).flags.length === 0);
   const jid = await C.judgeDraft(pack, { p1: [ok('Messi scored 37 goals, as P1 states.', ['A3', 'P1']), ok('Messi scored 37 goals.', ['A3'])] }, narrow);
   expect('writer: a sentence that quotes a fact id is deleted', jid.units[0].why.some(w => /quotes a fact id/.test(w)) && !jid.units[1].why.some(w => /fact id/.test(w)));
+  expect('tools: "landed at 39 out of 100" is Reliability; "0.42 goals and 0.35 assists per 90" are two rates', PC2.extractNumbers('his Reliability landed at 39 out of 100')[0].unit === 'reliability' && PC2.extractNumbers('at 0.42 goals and 0.35 assists per 90 minutes').map(x => x.unit).join() === 'per90,per90' && PC2.extractNumbers('scored 29 goals and 13 assists')[0].unit === 'goals');
   console.log(fails ? `\nCITED SELFTEST FAIL (${fails})` : '\nCITED SELFTEST PASS');
   process.exit(fails ? 1 : 0);
 })();
