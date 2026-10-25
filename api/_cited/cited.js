@@ -97,7 +97,7 @@ function sideFacts(line, P) {
   /*  NO SHOTS TOTAL AND NO KEY PASSES PER 90 ON A COMPARISON (Lucas, 2026-10-24): the Compare page prints
       neither, so the line no longer carries them, and a verdict's reader could not have checked them since
       10-22. The fact list follows the page, never the other way round. The card's notes keep both.  */
-  const H = g(/HONOURS: (.*?); (?:CABINET|CAREER STAGE|TAG MEANINGS|\d+ min)/) || '';
+  const H = g(/HONOURS: (.*?); (?:PROOF per 90|CABINET|CAREER STAGE|TAG MEANINGS|\d+ min)/) || '';
   for (const h of (H ? H.split(/; (?=[A-Z])/) : [])) {
     const m = h.match(/^(.+?) \d{4} \((player|team)\)/);
     if (m) F.push(honourFact(m[1], m[2]));
@@ -186,6 +186,8 @@ YOU MAY: restate a fact in your own words; compare cited facts ("the higher Crea
 YOU MAY NOT state anything the facts do not hold, however true of football: transfers, arrivals or debuts; other seasons, earlier or later clubs, career history; records and firsts; title races, league positions, trophies or awards not in the facts, or a fuller name for an award than the facts give; how strong or difficult a league, team, club or opponent was; managers, team-mates, matches, dates or moments; how a player plays, moves or looks.
 
 CROWNS. A sentence that names, implies or leans towards an overall winner of the comparison, the better season taken whole, is a crown. A lead in one measure, an honour or tag the other does not hold, or a higher figure stated as a figure is NOT a crown and may be written on any pair. ${'{CROWN_RULE}'} A crown must cite P1.
+
+NEVER WRITE A FACT ID IN A SENTENCE ("as P1 states", "see A3"): the ids are for the "cite" list only, and a sentence that mentions one is deleted.
 
 FORMAT. Reply with JSON only, no markdown. Each field is a list of sentences, each {"s": "the sentence", "cite": ["A3","B2"]}; add "new_paragraph": true to start a new paragraph inside a field.
 {FORMAT}
@@ -396,6 +398,7 @@ async function judgeDraft(pack, draft, narrow = narrowCheck) {
         called an honour; no rule saw it, and the fact list knows which kind each is.  */
     const kinds = new Set(citedFacts.map(f => factKind(f.text)));
     if (/\bhonours?\b/i.test(u.s) && !kinds.has('honour') && !kinds.has('cabinet')) why.push('says honour without citing an honour fact');   // a Cabinet fact is an honour too (2026-10-24)
+    if (/\b(?:[AB]\d{1,2}|P1)\b/.test(u.s)) why.push('quotes a fact id in the sentence');   // "as P1 states" shipped in pass 1 of the proof runs (2026-10-25)
     if (/\btags?\b/i.test(u.s) && !kinds.has('tag')) why.push('says tag without citing a tag fact');
     u.code = why.slice();
     if (!why.length) {

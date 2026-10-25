@@ -251,6 +251,12 @@ const expect = (name, cond) => { console.log((cond ? 'ok   ' : 'FAIL ') + name);
   // pass 1 of the proof runs (2026-10-25): the headline cites the identity facts; the writer sees the totals
   expect('headline: the format example cites A1 and B1 on a comparison and A1 on a card', /"cite": \["P1", "A1", "B1", "A2", "B2"\]/.test(C.VERDICT_FORMAT) && /"cite": \["A1", "A2", "A3"\]/.test(C.NOTES_FORMAT) && /THE HEADLINE OBEYS EVERY RULE BELOW/.test(C.writerSystem(pack)));
   expect('totals: the writer\'s facts open with each card\'s honour and tag totals', /card holds \d+ honours? and \d+ tags? in all/.test(C.factsText(pack).split('FACTS:')[0]) && /card holds \d+ honours? and \d+ tags? in all/.test(C.factsText(np).split('FACTS:')[0]));
+  // pass 1 flags (2026-10-25): per-90 binding, the honours segment, fact ids in prose
+  expect('tools: "0.46 assists per 90" binds to per90, not to assists; "1.31 shots on target per 90" the same', PC2.extractNumbers('Hazard\'s 0.46 assists per 90 is the higher figure').map(x => x.unit).join() === 'per90' && PC2.extractNumbers('Shots on target per 90 of 1.31 and goals per 90 of 0.53')[0].unit === 'per90' && PC2.extractNumbers('12 assists in all')[0].unit === 'assists');
+  const ibEv = require('../../_local/verdict-check/fresh2_evidence.json').items.find(x => x.id === 'ibrahimovic1516-lacazette2425');
+  expect('tools: the honours count stops at the PROOF segment (Ibrahimović holds three, not four)', PC2.pageFigures(ibEv).sides[0].honours === 3 && PC2.checkNumbers('Ibrahimović holds three honours this season', ibEv).flags.length === 0);
+  const jid = await C.judgeDraft(pack, { p1: [ok('Messi scored 37 goals, as P1 states.', ['A3', 'P1']), ok('Messi scored 37 goals.', ['A3'])] }, narrow);
+  expect('writer: a sentence that quotes a fact id is deleted', jid.units[0].why.some(w => /quotes a fact id/.test(w)) && !jid.units[1].why.some(w => /fact id/.test(w)));
   console.log(fails ? `\nCITED SELFTEST FAIL (${fails})` : '\nCITED SELFTEST PASS');
   process.exit(fails ? 1 : 0);
 })();

@@ -106,6 +106,12 @@ function extractNumbers(text) {
     if (tk.lw === 'one' && !/^(more|fewer|additional|less)$/.test((toks[j + 1] || {}).lw || '')) { k = j; continue; }   // "one lane each", "one goal every
     // unit: the next three words first, a no-source word anywhere in the clause next, then the words before
     let unit = null;
+    /*  "0.46 ASSISTS PER 90" IS A RATE, NOT A COUNT OF ASSISTS (2026-10-25, pass 1 of the proof runs: ten of fourteen
+        flags were the Proof panel's own per-90 figures bound to goals or assists and checked against the totals).
+        A per-90 pattern within the next four words wins over the count word that precedes it.  */
+    for (let q = 0; q < Math.min(4, ahead.length) && !unit; q++) {
+      if (ahead[q] === 'per' && /^(90|ninety)$/.test(ahead[q + 1] || '')) unit = ahead.slice(0, q).some(x => /^pass/.test(x)) && !ahead.slice(0, q).includes('key') ? 'passes90' : 'per90';
+    }
     for (let q = 0; q < Math.min(3, ahead.length) && !unit; q++) {
       const w = ahead[q];
       if (w === 'per' && /^(90|ninety)$/.test(ahead[q + 1] || '')) { unit = ahead.slice(0, q).some(x => /^pass/.test(x)) && !ahead.slice(0, q).includes('key') ? 'passes90' : 'per90'; break; }
@@ -158,7 +164,7 @@ function pageFigures(ev) {
       s.tags = T ? T.split(' | ').length : 0;
       for (const d of ['Goal Threat', 'Creation', 'Progression', 'Defensive']) { const x = g(new RegExp(d + ' (\\d+)')); if (x != null) { s.pct.push(x); s.dims[d] = x; } }
       if (s.rel != null) s.dims.Reliability = s.rel;
-      const H = (l.match(/HONOURS: (.*?); (?:CABINET|CAREER STAGE|TAG MEANINGS|\d+ min)/) || [])[1] || '';
+      const H = (l.match(/HONOURS: (.*?); (?:PROOF per 90|CABINET|CAREER STAGE|TAG MEANINGS|\d+ min)/) || [])[1] || '';   // PROOF follows HONOURS on the line (2026-10-25): without it the segment was counted as a fourth honour
       const hs = H ? H.split(/; (?=[A-Z])/) : [];
       s.honours = hs.length; s.playerHonours = hs.filter(h => /\(player/.test(h)).length;
       s.cabinet = 0;   // the Compare line carries no Cabinet (2026-10-24, Lucas): the page does not print it
