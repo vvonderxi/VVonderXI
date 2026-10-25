@@ -3,7 +3,7 @@
  *
  *    node scripts/calibration/sample.js --capture   render every item of fresh_sample.json from this repo
  *                                                   (no key) -> _local/verdict-check/fresh_evidence.json
- *    node scripts/calibration/sample.js             needs ANTHROPIC_API_KEY: the cited writer runs each item
+ *    node scripts/calibration/sample.js             needs the Anthropic key (environment or ~/.config/anthropic/vv.key): the cited writer runs each item
  *                                                   (cited.js: write, drop, narrow check, one regeneration,
  *                                                   else no prose), then EVERY check runs over what ships ->
  *                                                   _local/verdict-check/fresh_<time>.json and fresh_<time>.md
@@ -18,7 +18,7 @@
  *  see. What the narrow check missed and the tools also missed is what he is looking for.
  */
 const fs = require('fs'), path = require('path');
-require('dotenv').config({ quiet: true });
+const ENV = require('./env.js');   // the key from the environment or ~/.config/anthropic/vv.key, never .env (2026-10-25)
 const C = require('./cited.js'), PC = require('./prose_checks.js');
 const ROOT = path.join(__dirname, '..', '..'), DIR = path.join(ROOT, '_local', 'verdict-check');
 const _si = process.argv.indexOf('--sample');
@@ -120,7 +120,7 @@ function report(run) {
     process.exit(miss ? 1 : 0);
   }
   const NO_TOOLS = process.argv.includes('--no-tools');   // an endpoint pass can run without the key: the writer runs on the server; the tools run later with --tools <file>
-  if (!process.env.ANTHROPIC_API_KEY && !(NO_TOOLS && process.argv.includes('--endpoint'))) { console.error('ANTHROPIC_API_KEY is not set in .env. Add it for this run only, then blank it.'); process.exit(2); }
+  if (!process.env.ANTHROPIC_API_KEY && !(NO_TOOLS && process.argv.includes('--endpoint'))) { console.error('no Anthropic key: export ANTHROPIC_API_KEY or put the key in ' + ENV.KEY_FILE + ' (never in .env).'); process.exit(2); }
   if (!fs.existsSync(EVF)) { console.error('no evidence: run with --capture first'); process.exit(2); }
   const ti = process.argv.indexOf('--tools');
   if (ti > 0) {
@@ -162,7 +162,7 @@ function report(run) {
     }
     run.cost_write = null;
     const f = path.join(DIR, `${TAG}_endpoint_${stamp()}.json`);
-    if (NO_TOOLS) { fs.writeFileSync(f, JSON.stringify(run, null, 1)); console.log(`\nsaved without the tools -> ${path.relative(ROOT, f)}   (run: node scripts/calibration/sample.js --sample ${path.relative(ROOT, SAMPLE_FILE)} --tools ${path.relative(ROOT, f)} with the key in .env)`); return; }
+    if (NO_TOOLS) { fs.writeFileSync(f, JSON.stringify(run, null, 1)); console.log(`\nsaved without the tools -> ${path.relative(ROOT, f)}   (run: node scripts/calibration/sample.js --sample ${path.relative(ROOT, SAMPLE_FILE)} --tools ${path.relative(ROOT, f)} with the key in the environment or ~/.config/anthropic/vv.key)`); return; }
     console.log('\nthe writer ran on the server (its spend is on the account, not measured here). Now every check over what shipped:\n');
     await tools(run); run.cost_tools = cost([run.tools_usage]);
     fs.writeFileSync(f, JSON.stringify(run, null, 1)); fs.writeFileSync(f.replace(/\.json$/, '.md'), report(run));

@@ -3,7 +3,7 @@
  *
  *    node scripts/calibration/capture.js --audit     first: today's evidence, no key needed
  *    node scripts/calibration/score.js --selftest     the scorer's own control, no key needed
- *    node scripts/calibration/score.js [--runs N]     the run: needs ANTHROPIC_API_KEY in .env, for this run only
+ *    node scripts/calibration/score.js [--runs N]     the run: needs the Anthropic key (environment or ~/.config/anthropic/vv.key)
  *    node scripts/calibration/score.js --code [--selftest]   parts 2 and 3 of the rewrite (prose_checks.js):
  *        numbers need no key; the crown read needs one and is skipped without it
  *
@@ -27,7 +27,7 @@
  *  the "leave" sentences must score nothing caught and every leave sentence held. If either fails,
  *  the matcher is broken and a real run would measure the matcher, not the checker.
  */
-require('dotenv').config({ quiet: true });
+const ENV = require('./env.js');   // the key from the environment or ~/.config/anthropic/vv.key, never .env (2026-10-25)
 const fs = require('fs'), path = require('path');
 const A = require('../../api/analyse.js');
 const ROOT = path.join(__dirname, '..', '..');
@@ -170,7 +170,7 @@ function fixtureReads(it) {
       page (prose_checks.js judgeSentence). A flag is the whole sentence, so it scores every label in
       it (the sentence rule) and is a false hold only when the sentence holds no flag label.  */
   if (process.argv.includes('--sentences')) {
-    if (!process.env.ANTHROPIC_API_KEY) { console.error('ANTHROPIC_API_KEY is not set in .env. Add it for this run only, then blank it.'); process.exit(2); }
+    if (!process.env.ANTHROPIC_API_KEY) { console.error('no Anthropic key: export ANTHROPIC_API_KEY or put the key in ' + ENV.KEY_FILE + ' (never in .env).'); process.exit(2); }
     const mi = process.argv.indexOf('--model'), model = mi > 0 ? process.argv[mi + 1] : 'haiku';
     if (!PC.JUDGE_MODELS[model]) { console.error('--model must be one of ' + Object.keys(PC.JUDGE_MODELS).join(', ')); process.exit(2); }
     const EV = JSON.parse(fs.readFileSync(EVF, 'utf8'));
@@ -214,7 +214,7 @@ function fixtureReads(it) {
     console.log(`\nSELFTEST ${gOk && bOk && cOk ? 'PASS' : 'FAIL'}: A ${gOk ? 'scored every kind complete with no false hold' : 'WRONG'}, B ${bOk ? 'caught nothing and held every leave sentence' : 'WRONG'}, C ${cOk ? 'a flag on a mixed sentence scored its kind 2 and held nothing' : 'WRONG'}`);
     process.exit(gOk && bOk && cOk ? 0 : 1);
   }
-  if (!process.env.ANTHROPIC_API_KEY) { console.error('ANTHROPIC_API_KEY is not set in .env. Add it for this run only, then blank it.'); process.exit(2); }
+  if (!process.env.ANTHROPIC_API_KEY) { console.error('no Anthropic key: export ANTHROPIC_API_KEY or put the key in ' + ENV.KEY_FILE + ' (never in .env).'); process.exit(2); }
   if (!fs.existsSync(EVF)) { console.error('no evidence: run node scripts/calibration/capture.js --audit first'); process.exit(2); }
   const EV = JSON.parse(fs.readFileSync(EVF, 'utf8'));
   const runs = [];
