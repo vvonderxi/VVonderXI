@@ -667,6 +667,11 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
    spend are a live gap) AND THE PORT DONE, AS SPECCED, SWITCH STILL OFF.** The record is the "THE PORT IS DONE"
    section of `docs/PROSE_CASE_2026-10-24.md`. The proof runs go through the preview deployment with
    `sample.js --endpoint`, not through the script, and wait on Lucas setting `VV_PROSE=on` on Preview only.
+   **THE SAME MORNING: `VV_PROSE=on` set via the CLI on Preview for the `redesign-compare` branch only (Production
+   has none); the first preview crashed on the allowlist (the writer moved to `api/_cited/`); PASS 1 THROUGH THE
+   PREVIEW: sample 2 6 of 6 (114 sentences), sample 1 7 of 12 (verdicts 5 of 8, notes 2 of 4, 140 sentences), every
+   failure "the headline was deleted" on tie pairs and cards, 20 to 53 seconds a piece in the function. The tools
+   wait on the key, which is not on this machine. Pass 2 at 09:19 UTC after the sample rows are cleared.**
  THE CHOICE IS CODE-WRITTEN PROSE (the model only
    orders and voices sentences code builds from the page) OR NO PROSE. Both are honest.**
    **OPTION 5, PROSE BACK WITH A KNOWN KIND 1 RATE, IS OFF THE TABLE PERMANENTLY (Lucas,
