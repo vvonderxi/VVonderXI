@@ -471,6 +471,11 @@ module.exports = async (req, res) => {
         not cached (a cached no-prose row would hide an outage until the version moved) and the page gets its
         outage line. A piece the rules rejected twice IS no prose, by choice, and is cached as such.  */
     const upstreamFailed = out => !!(out && out.attempts && out.attempts.length && out.attempts.every(a => a.error));
+    /*  WHY A PIECE DIED, IN THE LOG (2026-10-25, pass 1 of the proof runs): the endpoint returns no attempts, so the
+        rejection reasons, the headline and every deleted sentence with its reason are logged here, or the only
+        record of a no-prose outcome is the word itself.  */
+    const whyLog = out => (out.attempts || []).map(a => a.error ? { attempt: a.attempt, error: String(a.error).slice(0, 120) }
+      : { attempt: a.attempt, reasons: a.reasons, deleted: (a.units || []).filter(u => !u.kept).map(u => ({ f: u.field, s: String(u.s).slice(0, 140), why: u.why })) });
 
     /* ────────────────────────────── NOTES (a card) ────────────────────────────── */
     if (isNotes) {
@@ -515,7 +520,7 @@ module.exports = async (req, res) => {
           return res.status(502).json({ error: 'upstream error' });
         }
         if (!out.prose) {
-          console.error('[vv] notes no-prose card=' + cid + ' why=' + out.why + ' ' + JSON.stringify((out.attempts || []).map(a => a.reasons || a.error)).slice(0, 300));
+          console.error('[vv] notes no-prose card=' + cid + ' why=' + out.why + ' ' + JSON.stringify(whyLog(out)));
           if (canCache) { try { await nsb.from('notes_cache').upsert({ card_id: cid, notes: { _noprose: true, why: out.why, at: new Date().toISOString() }, model: MODEL, rt: nRt, stats_hash: nHash, cache_version: CITED.RULES_VERSION }, { onConflict: 'card_id', ignoreDuplicates: false }); } catch (e) { /* non-fatal */ } }
           return res.json({ off: true, cached: false });
         }
@@ -595,7 +600,7 @@ module.exports = async (req, res) => {
         return res.status(502).json({ error: 'upstream error' });
       }
       if (!out.prose) {
-        console.error('[vv] verdict no-prose pair=' + (pairKey || _a + 'x' + _b) + ' why=' + out.why + ' ' + JSON.stringify((out.attempts || []).map(a => a.reasons || a.error)).slice(0, 300));
+        console.error('[vv] verdict no-prose pair=' + (pairKey || _a + 'x' + _b) + ' why=' + out.why + ' ' + JSON.stringify(whyLog(out)));
         if (cacheable) {
           try {
             await sb.from('verdict_cache').upsert({ pair_key: pairKey, card_id_a: loId, card_id_b: hiId, rt_a: rtLo, rt_b: rtHi, cache_version: verdictVersion,
