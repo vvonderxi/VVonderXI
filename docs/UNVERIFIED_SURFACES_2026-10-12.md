@@ -682,6 +682,15 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
    **PASS 2 ON THE CLOSED RULES: 18 OF 18 SHIPPED (notes 4 of 4), 349 sentences, no server-side death, 8 tool flags
    none a false fact on my reading. The table and the reading are in `docs/PROSE_CASE_2026-10-24.md`. The decision
    on `verdicts` in Production is Lucas's; notes need a second clean pass by his gate.**
+   **THE COUNT-FILTER AUDIT (Lucas's question: did dropping the judge's count claims blind it to anything true?).**
+   Every shipped sentence in the four pass files that the filter would drop was re-judged by Sonnet against the
+   page: 139 sentences, 9 judged unsupported, and all 9 are the judge's own error, the same two shapes: it counts
+   the band chip ICONIC as a tag ("seven player tags, not six"; "four player tags, not three") and it reads the
+   Cabinet's career honours as this season's ("Kane's Cabinet lists two Golden Boots"). The code count check, which
+   binds "N tags" to the request's tag total and "N honours" to this season's, had passed every one of them and is
+   right by the page. **Zero true catches hidden.** One observation for the page, not the writer: the card and the
+   Accolades block print the band chip among the tag chips under THE PLAYER, so a reader counting chips by eye
+   counts one more than the tags; the band is not a tag, and the writer's totals are the tags'.
  THE CHOICE IS CODE-WRITTEN PROSE (the model only
    orders and voices sentences code builds from the page) OR NO PROSE. Both are honest.**
    **OPTION 5, PROSE BACK WITH A KNOWN KIND 1 RATE, IS OFF THE TABLE PERMANENTLY (Lucas,
