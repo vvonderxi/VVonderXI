@@ -6,7 +6,7 @@ const crypto = require('crypto');
     global vv-core's verdictContext looks for, so the server reads the pair's margin exactly as the page does.  */
 global.VVMargin = global.VVMargin || require('../vv-margin.js');
 const VVCore = require('../vv-core.js');
-const CITED = require('../scripts/calibration/cited.js');
+const CITED = require('./_cited/cited.js');   // under api/ so the allowlisted upload carries it; the underscore keeps it from becoming a function
 
 /*  ── parseModelJSON , THE MODEL PREAMBLES AND WE WERE BINNING GOOD ANSWERS (2026-10-03) ──
     Measured on the rt>=95 warm run: 29% of pairs failed to parse, and the decisive case came
