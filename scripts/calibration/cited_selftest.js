@@ -258,6 +258,8 @@ const expect = (name, cond) => { console.log((cond ? 'ok   ' : 'FAIL ') + name);
   const jid = await C.judgeDraft(pack, { p1: [ok('Messi scored 37 goals, as P1 states.', ['A3', 'P1']), ok('Messi scored 37 goals.', ['A3'])] }, narrow);
   expect('writer: a sentence that quotes a fact id is deleted', jid.units[0].why.some(w => /quotes a fact id/.test(w)) && !jid.units[1].why.some(w => /fact id/.test(w)));
   expect('tools: "landed at 39 out of 100" is Reliability; "0.42 goals and 0.35 assists per 90" are two rates', PC2.extractNumbers('his Reliability landed at 39 out of 100')[0].unit === 'reliability' && PC2.extractNumbers('at 0.42 goals and 0.35 assists per 90 minutes').map(x => x.unit).join() === 'per90,per90' && PC2.extractNumbers('scored 29 goals and 13 assists')[0].unit === 'goals');
+  const jcb = await C.judgeDraft(pack, { p1: [ok('The Golden Boot sits in his cabinet from this season.', [honA.id]), ok('The Golden Boot is this season\'s honour.', [honA.id])] }, narrow);
+  expect('cabinet word: on a comparison "cabinet" is deleted; the same honour without the word passes', jcb.units[0].why.some(w => /says cabinet without citing a Cabinet fact/.test(w)) && !jcb.units[1].why.some(w => /cabinet/.test(w)) && jcab.units[0].kept);
   console.log(fails ? `\nCITED SELFTEST FAIL (${fails})` : '\nCITED SELFTEST PASS');
   process.exit(fails ? 1 : 0);
 })();

@@ -39,7 +39,7 @@ async function tools(run) {
   const EV = JSON.parse(fs.readFileSync(EVF, 'utf8'));
   let judgeUse = { input_tokens: 0, cache_creation_input_tokens: 0, cache_read_input_tokens: 0, output_tokens: 0 };
   for (const r of run.items) {
-    r.flags = []; r.unflagged = [];
+    r.flags = []; r.unflagged = []; r.dropped_counts = [];
     if (!r.prose) continue;
     const it = SAMPLE.items.find(x => x.id === r.id), ev = EV.items.find(x => x.id === r.id);
     const sents = PC.splitSentences(r.prose, it.type);
@@ -62,7 +62,8 @@ async function tools(run) {
       res.forEach((j, k) => {
         if (j.usage) for (const key of Object.keys(judgeUse)) judgeUse[key] += j.usage[key] || 0;
         if (!j.ok) add(sents[i + k].sentence, 'sentence judge (Sonnet)', 'failed to answer: ' + j.error);
-        else if (j.unsupported && !PC.isCountClaim(j.claim) && !PC.isCountClaim(sents[i + k].sentence)) add(sents[i + k].sentence, 'sentence judge (Sonnet)', j.claim + ' , ' + j.why);   // the sentence too (2026-10-25): the judge counted honours as tags on "Immobile's carries one" where the count word sat earlier in the sentence   // code counts tags and honours; the model's counts are dropped (2026-10-24)
+        else if (j.unsupported && (PC.isCountClaim(j.claim) || PC.isCountClaim(sents[i + k].sentence))) (r.dropped_counts = r.dropped_counts || []).push({ sentence: sents[i + k].sentence, claim: j.claim, why: j.why });   // kept on the record, not in the flags (Lucas, 2026-10-25): so the question "did the filter hide a true catch" can be answered from the run file
+        else if (j.unsupported) add(sents[i + k].sentence, 'sentence judge (Sonnet)', j.claim + ' , ' + j.why);   // the sentence too (2026-10-25): the judge counted honours as tags on "Immobile's carries one" where the count word sat earlier in the sentence   // code counts tags and honours; the model's counts are dropped (2026-10-24)
       });
     }
     const norm = t => String(t).toLowerCase().replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();

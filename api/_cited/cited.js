@@ -177,7 +177,7 @@ EVERY SENTENCE CITES THE FACTS IT RESTS ON, BY ID. The platform deletes, before 
 THE HEADLINE STATES THE RESULT AND ONE CITED FACT, NOTHING MORE. No image, no flourish, no "a season for the ages", no "a season apart in class": the result as P1 gives it, and one figure or one honour, in plain words. The glance line on a card is the same: one fact, plainly. THE HEADLINE OBEYS EVERY RULE BELOW LIKE ANY SENTENCE: if it names a club, a league, a position or an age it must cite A1 (and B1), and the whole piece is thrown away when the headline is deleted, so cite A1 and B1 in it as a matter of course. THE HEADLINE NAMES THE WINNER when P1 names one; a headline that does not is thrown away with the piece.
 If too much of a piece is deleted, the whole piece is thrown away and the reader sees no writing at all. So write fewer, truer sentences. A sentence with nothing to cite has no place: no scene-setting, no linking lines, no philosophy.
 
-A SENTENCE THAT NAMES A CLUB, A LEAGUE OR AN AGE MUST CITE THAT PLAYER'S FIRST FACT (A1 or B1), which is where they are. A SENTENCE THAT SAYS "HONOUR" MUST CITE AN HONOUR FACT OR A CABINET FACT, AND ONE THAT SAYS "TAG" A TAG FACT: Peak, The Standard and the rest are tags, never honours. A CABINET FACT is what he had won BY this season, with its year; it is not this season's honour, so say "by this season" or "in his cabinet", and never write that a player holds no honour when his Cabinet facts hold one.
+A SENTENCE THAT NAMES A CLUB, A LEAGUE OR AN AGE MUST CITE THAT PLAYER'S FIRST FACT (A1 or B1), which is where they are. A SENTENCE THAT SAYS "HONOUR" MUST CITE AN HONOUR FACT OR A CABINET FACT, AND ONE THAT SAYS "TAG" A TAG FACT: Peak, The Standard and the rest are tags, never honours. A CABINET FACT is what he had won BY this season, with its year; it is not this season's honour, so say "by this season" or "in his cabinet", and never write that a player holds no honour when his Cabinet facts hold one. THE WORD "CABINET" NAMES THAT BLOCK OF THE CARD AND NOTHING ELSE: never call this season's honours a cabinet, and on a comparison (which has no Cabinet facts) do not use the word at all.
 
 THE PROOF PANEL IS IN THE FACTS, as the page prints it: on a comparison, goals, assists and shots on target per 90 and goal conversion; on a card, the three rows of the player's position (a defender's tackles, interceptions and blocks). Quote them at the decimals given; "not recorded" means the page prints NR, and you may say so.
 
@@ -399,6 +399,10 @@ async function judgeDraft(pack, draft, narrow = narrowCheck) {
     const kinds = new Set(citedFacts.map(f => factKind(f.text)));
     if (/\bhonours?\b/i.test(u.s) && !kinds.has('honour') && !kinds.has('cabinet')) why.push('says honour without citing an honour fact');   // a Cabinet fact is an honour too (2026-10-24)
     if (/\b(?:[AB]\d{1,2}|P1)\b/.test(u.s)) why.push('quotes a fact id in the sentence');   // "as P1 states" shipped in pass 1 of the proof runs (2026-10-25)
+    /*  "CABINET" IS THE CARD'S WORD FOR WHAT HE HAD WON BY THIS SEASON (Lucas, 2026-10-25, pass 2: "the Ballon d'Or and
+        the UCL sit in his cabinet from this season alone" was this season's honours in the card's word for a
+        different block). The word may name only a Cabinet fact; a comparison has none, so there it is deleted.  */
+    if (/\bcabinets?\b/i.test(u.s) && !kinds.has('cabinet')) why.push('says cabinet without citing a Cabinet fact');
     if (/\btags?\b/i.test(u.s) && !kinds.has('tag')) why.push('says tag without citing a tag fact');
     u.code = why.slice();
     if (!why.length) {
