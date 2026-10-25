@@ -119,7 +119,8 @@ function report(run) {
     console.log(`\n${out.length - miss} of ${out.length} captured -> ${path.relative(ROOT, EVF)}`);
     process.exit(miss ? 1 : 0);
   }
-  if (!process.env.ANTHROPIC_API_KEY) { console.error('ANTHROPIC_API_KEY is not set in .env. Add it for this run only, then blank it.'); process.exit(2); }
+  const NO_TOOLS = process.argv.includes('--no-tools');   // an endpoint pass can run without the key: the writer runs on the server; the tools run later with --tools <file>
+  if (!process.env.ANTHROPIC_API_KEY && !(NO_TOOLS && process.argv.includes('--endpoint'))) { console.error('ANTHROPIC_API_KEY is not set in .env. Add it for this run only, then blank it.'); process.exit(2); }
   if (!fs.existsSync(EVF)) { console.error('no evidence: run with --capture first'); process.exit(2); }
   const ti = process.argv.indexOf('--tools');
   if (ti > 0) {
@@ -160,9 +161,10 @@ function report(run) {
       console.log(`${it.id}: ${outcome}  (${secs}s)`);
     }
     run.cost_write = null;
+    const f = path.join(DIR, `${TAG}_endpoint_${stamp()}.json`);
+    if (NO_TOOLS) { fs.writeFileSync(f, JSON.stringify(run, null, 1)); console.log(`\nsaved without the tools -> ${path.relative(ROOT, f)}   (run: node scripts/calibration/sample.js --sample ${path.relative(ROOT, SAMPLE_FILE)} --tools ${path.relative(ROOT, f)} with the key in .env)`); return; }
     console.log('\nthe writer ran on the server (its spend is on the account, not measured here). Now every check over what shipped:\n');
     await tools(run); run.cost_tools = cost([run.tools_usage]);
-    const f = path.join(DIR, `${TAG}_endpoint_${stamp()}.json`);
     fs.writeFileSync(f, JSON.stringify(run, null, 1)); fs.writeFileSync(f.replace(/\.json$/, '.md'), report(run));
     console.log(`\ntools: about $${run.cost_tools.toFixed(2)}\n-> ${path.relative(ROOT, f)}\n-> ${path.relative(ROOT, f.replace(/\.json$/, '.md'))}`);
     return;
