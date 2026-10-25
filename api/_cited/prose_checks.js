@@ -100,7 +100,10 @@ function extractNumbers(text) {
     let b = j; while (b < toks.length - 1 && !PUNCT.test(toks[b + 1].s)) b++;
     const clause = t.slice(toks[a].i, toks[b].end).trim();
     // ahead stops at the next number, so "123 for 28 goals" does not give 123 the unit of 28
-    let e = j + 1; while (e <= b && !/^\d/.test(toks[e].s) && W1[toks[e].lw] == null && W10[toks[e].lw] == null) e++;
+    /*  THE 90 OF "PER 90" STAYS IN THE WINDOW (2026-10-25): the stop at the next number cut it, so "assists per 90"
+        reached the unit scan as [assists, per] and the per-90 pattern could never match; every per-90 figure was
+        bound to the count word before it. A 90 or "ninety" right after "per" is not a new number.  */
+    let e = j + 1; while (e <= b && (!(/^\d/.test(toks[e].s) && !(toks[e - 1].lw === 'per' && /^(90|ninety)$/.test(toks[e].lw))) && W1[toks[e].lw] == null && W10[toks[e].lw] == null || (toks[e - 1].lw === 'per' && /^(90|ninety)$/.test(toks[e].lw)))) e++;
     const ahead = toks.slice(j + 1, e).map(x => x.lw), back = toks.slice(a, k).map(x => x.lw);
     if (toks[k - 1] && toks[k - 1].lw === 'per' && v === 90) { k = j; continue; }       // the 90 of "per 90"
     if (tk.lw === 'one' && !/^(more|fewer|additional|less)$/.test((toks[j + 1] || {}).lw || '')) { k = j; continue; }   // "one lane each", "one goal every
@@ -128,6 +131,8 @@ function extractNumbers(text) {
     }
     if (!unit) {
       const bw = back.slice(-4);
+      /*  "goals per 90 of 0.53": the per-90 pattern BEHIND the number (2026-10-25).  */
+      for (let q = 0; q < bw.length - 1 && !unit; q++) if (bw[q] === 'per' && /^(90|ninety)$/.test(bw[q + 1] || '')) { unit = bw.slice(0, q).some(x => /^pass/.test(x)) && !bw.slice(0, q).includes('key') ? 'passes90' : 'per90'; bind = 'back'; }
       if (bw.some(w => DIM.test(w))) { unit = bw.some(w => /^(reliability|availability)$/.test(w)) ? 'reliability' : 'dimension'; bind = 'dim'; }   // before the age rule: "Reliability rated at 39" is not an age (2026-10-24, the confirming run)
       else if ((/^(at|aged)$/.test(bw[bw.length - 1] || '') || (bw.slice(-2).join(' ') === 'age of')) && v >= 14 && v <= 45) { unit = 'years'; bind = 'age'; }   // "Iconic at 91" is a score, not an age
       else { for (let q = bw.length - 1; q >= 0 && !unit; q--) unit = unitOf(bw[q], bw[q + 1]); if (unit) bind = 'back'; }
@@ -261,6 +266,10 @@ function checkNumbers(prose, ev) {
       continue;
     }
     if (n.unit && n.unit !== 'honours' && n.unit !== 'tags') {
+      /*  A PER-90 FIGURE THE PAGE PRINTS ANYWHERE PASSES (2026-10-25): the card prints key passes per 90 and the
+          comparison does not, so the request carries it for notes only; a reader of either page can still find the
+          decimal on the card. Rates are exact decimals, so the whole-page set is a safe check for them.  */
+      if ((n.unit === 'per90' || n.unit === 'passes90') && onPage.has(n.value)) { unbound.push({ raw: n.raw, clause: n.clause, crossUnit: n.unit }); continue; }
       const set = derived(F, n.unit);
       if (!set.size) { if (!rescue()) flags.push(why(n.unit, `is a figure of a kind (${n.unit}) no page shows for this pair`)); else unbound.push({ raw: n.raw, clause: n.clause, crossUnit: n.unit }); continue; }
       const ok = set.has(n.value) || (n.qualifier ? near(n.value, set, n.qualifier) : (n.unit === 'shots' || n.unit === 'minutes') && near(n.value, set, null) && !Number.isInteger(n.value));
