@@ -69,6 +69,15 @@ async function compare() {
 }
 
 // The cheap signal: has Vercel posted anything on this commit? Needs `gh`; skipped quietly if absent.
+async function probeFunction() {
+  try {
+    const r = await fetch(`${BASE}/api/analyse`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Origin': BASE }, body: '{"messages":[]}' });
+    const text = await r.text();
+    let j = null; try { j = JSON.parse(text); } catch (e) { return { ok: false, what: `HTTP ${r.status}, not JSON: ${text.replace(/\s+/g, ' ').slice(0, 80)}` }; }
+    if (j && (j.off || j.held || typeof j.error === 'string')) return { ok: true, what: `HTTP ${r.status} ${JSON.stringify(j).slice(0, 60)}` };
+    return { ok: false, what: `HTTP ${r.status} ${text.slice(0, 80)}` };
+  } catch (e) { return { ok: false, what: 'fetch threw: ' + e.message }; }
+}
 function vercelSaw() {
   try {
     const repo = execFileSync('gh', ['repo', 'view', '--json', 'nameWithOwner', '-q', '.nameWithOwner'], { encoding: 'utf8' }).trim();
@@ -93,7 +102,18 @@ function vercelSaw() {
     process.stdout.write(`  ${diff.length} file(s) differ, waiting (${Math.round(el / 1000)}s)\n`);
     await sleep(15000);
   }
-  if (!diff.length) { console.log(`\nOK , ${BASE} serves HEAD ${HEAD.slice(0, 7)}: all ${FILES.length} files byte-identical.`); return; }
+  if (!diff.length) {
+    console.log(`\nOK , ${BASE} serves HEAD ${HEAD.slice(0, 7)}: all ${FILES.length} files byte-identical.`);
+    /*  THE FUNCTION IS INVOKED, NOT ONLY SERVED (2026-10-25, RULES.md: a check that cannot fail is not a check). A
+        preview built from dec75ad served every static file byte-identical and crashed on every call to
+        /api/analyse, because a shipped module did not parse. A body of {"messages":[]} spends nothing: the switch
+        answers the off shape, or the bounds answer 400; either is JSON from a function that loaded. HTML or
+        FUNCTION_INVOCATION_FAILED is a failed deploy.  */
+    const fn = await probeFunction();
+    if (fn.ok) { console.log(`OK , /api/analyse answers (${fn.what}).`); return; }
+    console.log(`\nFAIL , the static site is HEAD but /api/analyse does not answer as a function: ${fn.what}`);
+    process.exit(1);
+  }
   if (!shown) { saw = vercelSaw(); if (saw) console.log(`  GitHub: ${saw}`); }
   console.log(`\nFAIL , ${BASE} is NOT serving HEAD ${HEAD.slice(0, 7)}. ${diff.length} file(s) differ:`);
   diff.forEach(l => console.log('  ' + l));

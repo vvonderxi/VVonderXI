@@ -1,0 +1,12 @@
+#!/bin/bash
+#  THE COMMIT GATE (2026-10-25). Lucas: "a check that cannot fail is not a check." dec75ad shipped a module that did not
+#  parse because the self-test's failure was swallowed by a grep in a pipe. Every gate here is its own command and its
+#  own exit status; nothing is piped. Install once per clone:  git config core.hooksPath .githooks
+set -u
+cd "$(git rev-parse --show-toplevel)" || exit 1
+fail() { echo "COMMIT REFUSED: $1"; exit 1; }
+node -e "require('./api/analyse.js')" > /dev/null 2>&1 || fail "api/analyse.js does not load (a shipped module does not parse or require)"
+[ -f _local/verdict-check/fresh_evidence.json ] || fail "no _local/verdict-check/fresh_evidence.json: the self-test cannot run (node scripts/calibration/sample.js --capture --audit)"
+node scripts/calibration/cited_selftest.js > /tmp/vv_selftest.out 2>&1 || { tail -5 /tmp/vv_selftest.out; fail "cited_selftest.js failed"; }
+node scripts/lint-inline.js > /tmp/vv_lint.out 2>&1 || { tail -6 /tmp/vv_lint.out; fail "lint-inline.js reported a fault"; }
+echo "commit gate: analyse.js loads, self-test $(grep -c '^ok' /tmp/vv_selftest.out) ok, lint-inline clean"

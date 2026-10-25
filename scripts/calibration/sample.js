@@ -116,9 +116,10 @@ function report(run) {
     fs.mkdirSync(DIR, { recursive: true });
     fs.writeFileSync(EVF, JSON.stringify({ captured_at: new Date().toISOString(), items: out }, null, 1));
     for (const e of out.filter(x => x.captured && x.page && x.page.compare)) console.log(`${e.id}: page says "${(e.page.compare.match(/The Verdict\n([^\n]+)/) || [])[1]}"`);
-    const miss = out.filter(x => !x.captured).length;
-    console.log(`\n${out.length - miss} of ${out.length} captured -> ${path.relative(ROOT, EVF)}`);
-    process.exit(miss ? 1 : 0);
+    const miss = out.filter(x => !x.captured).length, unchecked = out.filter(x => x.unchecked && x.unchecked.length);
+    for (const x of unchecked) console.log(`AUDIT: ${x.id} sends numbers the rendered pages do not print: ${JSON.stringify(x.unchecked)}`);
+    console.log(`\n${out.length - miss} of ${out.length} captured -> ${path.relative(ROOT, EVF)}${unchecked.length ? `; AUDIT FAILED on ${unchecked.length}` : '; audit clean'}`);
+    process.exit((miss || unchecked.length) ? 1 : 0);   // an audit that printed its misses and exited 0 was a check that could not fail (2026-10-25)
   }
   const NO_TOOLS = process.argv.includes('--no-tools');   // an endpoint pass can run without the key: the writer runs on the server; the tools run later with --tools <file>
   if (!process.env.ANTHROPIC_API_KEY && !(NO_TOOLS && process.argv.includes('--endpoint'))) { console.error('no Anthropic key: export ANTHROPIC_API_KEY or put the key in ' + ENV.KEY_FILE + ' (never in .env).'); process.exit(2); }
@@ -163,7 +164,8 @@ function report(run) {
     }
     run.cost_write = null;
     const f = path.join(DIR, `${TAG}_endpoint_${stamp()}.json`);
-    if (NO_TOOLS) { fs.writeFileSync(f, JSON.stringify(run, null, 1)); console.log(`\nsaved without the tools -> ${path.relative(ROOT, f)}   (run: node scripts/calibration/sample.js --sample ${path.relative(ROOT, SAMPLE_FILE)} --tools ${path.relative(ROOT, f)} with the key in the environment or ~/.config/anthropic/vv.key)`); return; }
+    const failedItems = run.items.filter(x => /^failed/.test(x.outcome)).length;
+    if (NO_TOOLS) { fs.writeFileSync(f, JSON.stringify(run, null, 1)); console.log(`\nsaved without the tools -> ${path.relative(ROOT, f)}   (run: node scripts/calibration/sample.js --sample ${path.relative(ROOT, SAMPLE_FILE)} --tools ${path.relative(ROOT, f)} with the key in the environment or ~/.config/anthropic/vv.key)`); if (failedItems) { console.error(`${failedItems} request(s) FAILED at the endpoint`); process.exit(1); } return; }
     console.log('\nthe writer ran on the server (its spend is on the account, not measured here). Now every check over what shipped:\n');
     await tools(run); run.cost_tools = cost([run.tools_usage]);
     fs.writeFileSync(f, JSON.stringify(run, null, 1)); fs.writeFileSync(f.replace(/\.json$/, '.md'), report(run));
