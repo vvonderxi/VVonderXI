@@ -1,6 +1,7 @@
 {
   "cleanUrls": true,
   "fluid": true,
+  "functions": { "api/analyse.js": { "maxDuration": 120 } },
   "headers": [
     {
       "source": "/og-image.png",

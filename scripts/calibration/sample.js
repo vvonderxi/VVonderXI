@@ -130,6 +130,43 @@ function report(run) {
     return;
   }
   const EV = JSON.parse(fs.readFileSync(EVF, 'utf8'));
+  /*  --endpoint <url>: THE PROOF RUN GOES THROUGH THE DEPLOYED FUNCTION, NOT THIS SCRIPT (Lucas, 2026-10-25). Each
+      item's exact request body, as the page sent it and the capture recorded it, is POSTed to <url>/api/analyse
+      with an Origin the allowlist accepts; the response is what a reader would get. The outcome is read off the
+      response shape (a verdict, { held } for no prose, { off } for a card with none), then the same tools run over
+      what shipped. The server does not return the writer's attempts, so the deletion record and the citation-based
+      hole count are not available on an endpoint run: the tools and the reading are.  */
+  const ei = process.argv.indexOf('--endpoint');
+  if (ei > 0) {
+    const base = process.argv[ei + 1].replace(/\/$/, ''), origin = process.argv.includes('--origin') ? process.argv[process.argv.indexOf('--origin') + 1] : base;
+    const run = { at: new Date().toISOString(), sample: path.basename(SAMPLE_FILE), evidence_captured_at: EV.captured_at, endpoint: base, writer: C.WRITER_MODEL, check: C.CHECK_MODEL, items: [] };
+    for (const it of SAMPLE.items) {
+      const ev = EV.items.find(x => x.id === it.id);
+      if (!ev || !ev.captured || !ev.body) { console.error(it.id + ': no captured request body (re-run --capture)'); process.exit(2); }
+      const t0 = Date.now();
+      let status = 0, data = null;
+      try {
+        const r = await fetch(base + '/api/analyse', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Origin': origin }, body: JSON.stringify(ev.body) });
+        status = r.status; data = await r.json().catch(() => null);
+      } catch (e) { data = { error: 'fetch threw: ' + e.message }; }
+      const secs = Math.round((Date.now() - t0) / 100) / 10;
+      let outcome, prose = null;
+      if (status === 200 && data && data.verdict) { outcome = data.cached ? 'shipped (cached)' : 'shipped'; prose = data.verdict; }
+      else if (status === 200 && data && typeof data.glance === 'string') { outcome = data.cached ? 'shipped (cached)' : 'shipped'; prose = { glance: data.glance, scout: data.scout, notes: data.notes }; }
+      else if (status === 200 && data && (data.held || data.off)) outcome = 'no-prose';
+      else outcome = 'failed ' + status + ' ' + JSON.stringify(data).slice(0, 120);
+      const pack = it.type === 'verdict' ? C.verdictFacts(ev) : C.notesFacts(ev.player);
+      run.items.push({ id: it.id, type: it.type, result: pack.result, winner: pack.winner, facts: pack.facts, outcome, why: null, prose, attempts: [], status, seconds: secs, winner_card_id: data && data.winner_card_id });
+      console.log(`${it.id}: ${outcome}  (${secs}s)`);
+    }
+    run.cost_write = null;
+    console.log('\nthe writer ran on the server (its spend is on the account, not measured here). Now every check over what shipped:\n');
+    await tools(run); run.cost_tools = cost([run.tools_usage]);
+    const f = path.join(DIR, `${TAG}_endpoint_${stamp()}.json`);
+    fs.writeFileSync(f, JSON.stringify(run, null, 1)); fs.writeFileSync(f.replace(/\.json$/, '.md'), report(run));
+    console.log(`\ntools: about $${run.cost_tools.toFixed(2)}\n-> ${path.relative(ROOT, f)}\n-> ${path.relative(ROOT, f.replace(/\.json$/, '.md'))}`);
+    return;
+  }
   const run = { at: new Date().toISOString(), sample: path.basename(SAMPLE_FILE), evidence_captured_at: EV.captured_at, writer: C.WRITER_MODEL, check: C.CHECK_MODEL, items: [] };
   const usage = [];
   for (const it of SAMPLE.items) {

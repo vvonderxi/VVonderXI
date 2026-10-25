@@ -25,8 +25,13 @@
  *      ordinary result, which the page renders as today's "No written opinion here, by choice." On day
  *      one most pieces may land there, and the site must look deliberate while that is true.
  *    - KEEPERS ARE NOT COVERED YET: a keeper card or a pair with a keeper goes straight to no prose.
- *  Nothing here is wired into api/analyse.js; prose stays off (VV_PROSE) until a fresh sample passes.
+ *  WIRED INTO api/analyse.js ON 2026-10-25 (the port, docs/PROSE_CASE_2026-10-24.md): the endpoint builds the
+ *  fact list with verdictFactsFrom (the two Player lines the page sends plus the result line it prints) or
+ *  notesFacts (the card payload), runs runPiece, and serves what survives. The switch VV_PROSE is still the
+ *  gate (absent or off: nothing; 'verdicts': comparisons only; 'on': both), and it is OFF until the proof
+ *  runs through the preview deployment pass and Lucas decides.
  */
+const crypto = require('crypto');
 const V = require('../../vv-core.js');
 const PC = require('./prose_checks.js');
 
@@ -117,9 +122,14 @@ function sideFacts(line, P) {
 function verdictFacts(ev) {
   const lines = ev.evidence.split('\n').filter(l => /^Player [AB]:/.test(l));
   if (lines.length !== 2) throw new Error('expected two player lines');
-  const a = sideFacts(lines[0]), b = sideFacts(lines[1]);
   const result = (String(ev.page && ev.page.compare || '').match(/The Verdict\n([^\n]+)/) || [])[1];
   if (!result) throw new Error('no result line on the rendered Compare page');
+  return verdictFactsFrom(lines[0], lines[1], result);
+}
+/*  THE ENDPOINT'S ENTRY (2026-10-25): the two Player lines as the page sends them, and the result line the page
+    prints and sends, already cross-checked by the server against the margin.  */
+function verdictFactsFrom(lineA, lineB, result) {
+  const a = sideFacts(lineA), b = sideFacts(lineB);
   const list = [];
   a.facts.forEach((f, i) => list.push({ id: 'A' + (i + 1), side: 'A', text: f }));
   b.facts.forEach((f, i) => list.push({ id: 'B' + (i + 1), side: 'B', text: f }));
@@ -439,4 +449,10 @@ async function runPiece(pack) {
   return { prose: null, outcome: 'no-prose', why: 'rejected twice', attempts, usage };
 }
 
-module.exports = { verdictFacts, notesFacts, scoreFact, reliabilityFact, nameRe, countsLine, identityFacts, VERDICT_FORMAT, NOTES_FORMAT, writerSystem, factsText, runPiece, judgeDraft, numbersOk, factKind, engagesBothSides, assemble, WRITER_MODEL, CHECK_MODEL, NARROW_SYSTEM };
+/*  THE RULES VERSION, DERIVED (2026-10-25, the same scheme as the old PROMPT_REV + fingerprint, RULES.md §C): the
+    writer's instructions, the narrow check's and both formats are fingerprinted, so an edit to any of them
+    stales every cached verdict and note. CITED_REV is bumped by hand for a change to a CODE rule (a drop rule,
+    the share, the crown gate), which the fingerprint cannot see.  */
+const CITED_REV = 'c1';
+const RULES_VERSION = CITED_REV + '-' + crypto.createHash('sha256').update(WRITER_SYSTEM + NARROW_SYSTEM + VERDICT_FORMAT + NOTES_FORMAT + REJECT_SHARE).digest('hex').slice(0, 8);
+module.exports = { verdictFactsFrom, RULES_VERSION, CITED_REV, WRITER_SYSTEM, verdictFacts, notesFacts, scoreFact, reliabilityFact, nameRe, countsLine, identityFacts, VERDICT_FORMAT, NOTES_FORMAT, writerSystem, factsText, runPiece, judgeDraft, numbersOk, factKind, engagesBothSides, assemble, WRITER_MODEL, CHECK_MODEL, NARROW_SYSTEM };

@@ -1,5 +1,8 @@
 #!/usr/bin/env node
-/*  CALIBRATE THE CHECKING PASS BEFORE IT IS SWITCHED ON (2026-10-12).
+/*  RETIRED 2026-10-25: checkVerdictSupport left api/analyse.js with the old writer (the cited writer's drop rule
+ *  and narrow check are what guard the endpoint now, scripts/calibration/cited.js). Kept for the record; it no
+ *  longer runs.
+ *  CALIBRATE THE CHECKING PASS BEFORE IT IS SWITCHED ON (2026-10-12).
  *
  *    node scripts/capture-verdict-evidence.js     first: the exact messages compare sends
  *    node scripts/calibrate-verdict-check.js      then: needs ANTHROPIC_API_KEY in .env, temporarily

@@ -172,10 +172,13 @@ const MODULES = [
 //  THESE ARE TRIPWIRES, NOT TARGETS. The floor sits well below the real length and well above
 //  a truncation. If a DELIBERATE edit takes a prompt under its floor, move the floor in the
 //  same commit , that is a decision, and it should look like one in the diff.
+//  THE PROMPTS MOVED WITH THE WRITER (2026-10-25): the old 20,000-character prompts left api/analyse.js, and the
+//  cited writer's live in scripts/calibration/cited.js. Same tripwire, new strings and floors.
 const STRING_FLOORS = [
-  { file: 'api/analyse.js', export: 'VERDICT_SYSTEM',       min: 16000 },   // 21,403 on 2026-09-13
-  { file: 'api/analyse.js', export: 'NOTES_SYSTEM',         min: 22000 },   // 29,267 on 2026-09-13
-  { file: 'api/analyse.js', export: 'VERDICT_SYSTEM_JUDGE', min: 14000 },   // 19,132 on 2026-09-13
+  { file: 'scripts/calibration/cited.js', export: 'WRITER_SYSTEM',  min: 3000 },   // 4,528 with the format spliced, 2026-10-25
+  { file: 'scripts/calibration/cited.js', export: 'NARROW_SYSTEM',  min: 1000 },   // 1,431 on 2026-10-25
+  { file: 'scripts/calibration/cited.js', export: 'NOTES_FORMAT',   min: 450 },    // 683 on 2026-10-25
+  { file: 'scripts/calibration/cited.js', export: 'VERDICT_FORMAT', min: 250 },    // 371 on 2026-10-25
 ];
 function lintStringFloors(){
   const out = [];
@@ -271,7 +274,11 @@ function lintModules(){
     left the payload (the writer sees what the reader sees, kind 2). Prose is off, so nothing regenerates.  */
 /*  Re-pinned again 2026-10-22, same day: starts, passes per 90, dribbles, duels and penalty goals left the
     payload, and key passes and total shots go only where the card prints them (the reader-can-check rule).  */
-const STATS_HASH_PIN = { outfield: 'd92a9a619ade8cc8', keeper: '48f6e5e8bdfbd330' };
+/*  MOVED 2026-10-25, DELIBERATELY: the notes payload gained `cabinet` and `proof_rows` (the Cabinet and the card's
+    Proof panel join the cited writer's fact list, docs/PAGE_FACTS_2026-10-24.md), so the outfield hash moved from
+    d92a9a619ade8cc8. Every cached note was already stale under the cited writer's RULES_VERSION, so nothing is
+    lost that was not already gone. The keeper payload carries neither field and its pin is unchanged.  */
+const STATS_HASH_PIN = { outfield: 'c042e7b750ac1b65', keeper: '48f6e5e8bdfbd330' };
 function lintCacheStamps(){
   const out = [];
   let A, VVCore;

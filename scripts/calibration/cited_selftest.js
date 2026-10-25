@@ -240,6 +240,14 @@ const expect = (name, cond) => { console.log((cond ? 'ok   ' : 'FAIL ') + name);
   const dbp = C.verdictFacts(EV.items.find(x => x.id === 'debruyne1718-pogba1819'));
   expect('per-page rule: a comparison carries no key passes per 90 and no shots total', !dbp.facts.some(f => / key passes per 90 minutes$| goals from \d+ shots$/.test(f.text)) && dbp.facts.some(f => / goals per 90 minutes$/.test(f.text)));
   expect('per-page rule: the card keeps shots total and key passes per 90 for its notes', osiN.facts.some(f => / goals from \d+ shots$/.test(f.text)) && kpF.some(t => / key passes per 90 minutes$/.test(t)));
+  // the port (2026-10-25): the endpoint's entry builds the same pack from the two lines and the printed result line
+  const dbEv = EV.items.find(x => x.id === 'debruyne1718-pogba1819'), dbLines = dbEv.evidence.split('\n').filter(l => /^Player [AB]:/.test(l));
+  const viaEndpoint = C.verdictFactsFrom(dbLines[0], dbLines[1], 'The Index cannot separate these two.');
+  expect('port: verdictFactsFrom builds the pack the endpoint uses, identical to the calibration pack', JSON.stringify(viaEndpoint.facts) === JSON.stringify(C.verdictFacts(dbEv).facts) && viaEndpoint.winner === null);
+  expect('port: the rules version is derived from the prompts and a hand rev', /^c\d+-[0-9a-f]{8}$/.test(C.RULES_VERSION));
+  const V2 = require('../../vv-core.js');
+  expect('port: the result line is one function for the page and the server', V2.vvResultLine({ ladder: 'bragging_rights' }, { surname: 'Kane', vv: 92 }, { surname: 'Mertens', vv: 79 }, 'A') === 'Kane wins it clearly , 92 to 79' && V2.vvResultLine({ separation: 'inside' }, {}, {}, 'tie') === 'The Index cannot separate these two.');
+  expect('port: the captured request carries the printed result line and no instructions', !!(dbEv.body && typeof dbEv.body.resultLine === 'string') && !/Result:|Tone:|VERDICT TAG/.test(dbEv.evidence));
   console.log(fails ? `\nCITED SELFTEST FAIL (${fails})` : '\nCITED SELFTEST PASS');
   process.exit(fails ? 1 : 0);
 })();

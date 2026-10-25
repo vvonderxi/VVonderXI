@@ -5862,6 +5862,27 @@ body.light .vvrows-season .srsub{color:var(--ink-soft)}
       the lower number would contradict the page. On an exact TIE nothing was asked of the
       model. Only the 'inside' state is Path B's.
       A NULL ID IS A DECLINE, and a decline leaves the context exactly as it was.  */
+  /*  THE RESULT LINE THE PAGE PRINTS UNDER "THE VERDICT" (moved here from compare.html, 2026-10-25). It is
+      the sentence the cited writer gets as P1, "the page's own result", so the page and the server must
+      build it from one function: compare.html prints it, sends it with the request, and api/analyse.js
+      rebuilds it from the same inputs and refuses a request whose line disagrees. That closes failure
+      kind 3 by construction: the writer is bound to the page's own line, not told about the separation
+      in instructions and left to argue (docs/PROSE_CASE_2026-10-24.md).
+      `ctx` is verdictContext (or the outcome applyVerdictOutcome builds from it), `winner` 'A'/'B'/'tie',
+      A and B carry surname and vv. The verb comes off the ladder the engine already decided.  */
+  var LADDER_WHO = { masterclass:'wins it outright', bragging_rights:'wins it clearly', clear_edge:'has the clear edge',
+                     photo_finish:'takes it by a whisker', var_close:'edges it', the_debate:'edges it' };
+  function vvResultLine(ctx, A, B, winner){
+    var va = +((A && A.vv) || 0), vb = +((B && B.vv) || 0);
+    if (winner === 'A' || winner === 'B') {
+      var W = (winner === 'A') ? A : B, wv = (winner === 'A') ? va : vb, lv = (winner === 'A') ? vb : va;
+      var verb = (ctx && LADDER_WHO[ctx.ladder]) || 'edges it';
+      return (ctx && ctx.decidedBy === 'ai') ? (W.surname + ' takes it on the record, not on the number')
+           : (ctx && ctx.tipped) ? (W.surname + ' edges it on age , ' + wv + ' plays ' + lv + ', the harder feat at a younger age')
+                                 : (W.surname + ' ' + verb + ' , ' + wv + ' to ' + lv);
+    }
+    return (ctx && ctx.separation === 'inside') ? 'The Index cannot separate these two.' : 'Level on the Index. It will not separate them.';
+  }
   function applyVerdictOutcome(ctx, winnerCardId, A, B){
     if (!ctx) return ctx;
     const out = Object.assign({}, ctx, { decidedBy: (ctx.winner === 'A' || ctx.winner === 'B') ? 'engine' : null });
@@ -8332,7 +8353,7 @@ body.light .vvtoast{background:#FBF7EF;color:#241f1a;border-color:rgba(0,0,0,.14
   const api = { vvBeacon, inkFor, luma, shieldSplit, buildCard, vvIsGKCard, vvPayloadRev, vvPayloadStats, vvParseModelJSON, bandPublic, useCardMarks, vvInlineMarks, vvShimInsetRims, vvShimShieldNumbers, vvBrandTextNode, vvLoader, vvInjectLoaderCSS, vvHoldLoader, VV_LOADER_HOLD_MS, VV_LOADER_MIN, VV_WAIT, SHARE_FORMATS, SH_TYPE, vvCopyText, vvAuditCaptureSupport, vvShareCapability, vvXText, VV_HANDLE_X, vvShareLabel, vvApplyShareCapability, vvShareFrameHTML, vvShareCaption, vvRenderShareImage, vvShareCompose, vvToast, vvInjectShareCSS, VERDICT_SHARE_NAME, verdictShareName, renderTagPills, renderPrestige, getVVTags, careerStageTags, TAG_DEFS, TAG_THRESHOLDS_POOL, rowToCard, fmtSeason, surnameOf, vvDisplayName, flagFor,
                 vvNorm, tokenAndFilter, rankBySearch, vvParseSearch, vvAbsent, VV_SCOPE_LINE, vvSeasonLabel, searchFieldToken, SEARCH_CEIL,
                 vvSeasonFromBareYear,
-                FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext, vvApplyVerdictOutcome: applyVerdictOutcome,
+                FILTER_TAXONOMY, renderFilterChips, VERDICT_TAGS, verdictContext, vvApplyVerdictOutcome: applyVerdictOutcome, vvResultLine,
                 bandFor, prestigeFor, posDisplay, posFull, radarFor, confidenceFor, confidenceFields, orderSeasonRows, SHIRT_SOURCE_NOTE, SHIRT_SOURCE_LABEL, shirtNumberNote, partialSeasonNote, notScoredNote, SCORE_MIN_MINUTES, vvLongDate, keeperScore, keeperState, keeperPanelHTML, keeperPanelsHTML, keeperTrajectoryPairHTML, keeperTrajectoryHTML, keeperSeriesFor, KEEPER_POOL, vvAuditLoaderInk, vvAIStats, PROOF_DIMS, POOL_DIM, proofFieldsFor, vvClient,
                 fetchHonours, HONOUR_META, HONOUR_ONELINER, HONOUR_GROUP_ORDER,
                 renderHonourChips, renderHonourRows, renderTopHonourPill, HONOUR_CHIP_LABEL,

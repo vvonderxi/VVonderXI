@@ -27,7 +27,8 @@
  */
 const fs = require('fs'), path = require('path'), http = require('http'), os = require('os');
 const { spawn } = require('child_process');
-const A = require('../../api/analyse.js');
+/*  The old endpoint's notesUserMessage was required here for the notes evidence text; the writer it served is gone (2026-10-25).  */
+const notesEvidence = player => 'Write the Commentator\'s Notes for this player-season. Card data:\n' + JSON.stringify(player, null, 2);
 const ROOT = path.join(__dirname, '..', '..');
 const SET = JSON.parse(fs.readFileSync(path.join(__dirname, 'verdict_check_set.json'), 'utf8'));
 const OUT = path.join(ROOT, '_local', 'verdict-check', 'evidence_set.json');
@@ -121,8 +122,8 @@ async function captureItems(items, opts = {}) {
       if (!body) { console.log(`${it.id}  NOT CAPTURED`); out.push({ id: it.id, captured: false }); continue; }
       const evidence = it.type === 'verdict'
         ? body.messages.map(m => typeof m.content === 'string' ? m.content : JSON.stringify(m.content)).join('\n\n')
-        : A.notesUserMessage(body.player || {});
-      const entry = { id: it.id, captured: true, evidence, chars: evidence.length };
+        : notesEvidence(body.player || {});
+      const entry = { id: it.id, captured: true, evidence, chars: evidence.length, body };   // body: the exact request, for sample.js --endpoint (2026-10-25)
       if (it.type !== 'verdict') entry.player = body.player || {};   // the structured card, for the cited writer's fact list
       /*  THE RENDERED PAGE, SAVED FOR EVERY ITEM (2026-10-23). The checks read this, not the payload:
           the payload has no Chronicle and no honour or tag copy, so a check reading it holds good

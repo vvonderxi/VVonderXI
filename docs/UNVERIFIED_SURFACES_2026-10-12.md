@@ -663,6 +663,10 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
    and honest under the rule; the fault is the Compare Proof panel printing attacking rows to a defender pair,
    logged in §D as a page error, not a payload fix, so that when the panel prints per-pool rows the facts follow.
    Both samples re-captured, audit clean. Nothing runs until the cap lifts.
+   **2026-10-25: THE CAP RAISED TO $140 (Lucas, deliberately; B4b verified in anger; the alerts below the month's
+   spend are a live gap) AND THE PORT DONE, AS SPECCED, SWITCH STILL OFF.** The record is the "THE PORT IS DONE"
+   section of `docs/PROSE_CASE_2026-10-24.md`. The proof runs go through the preview deployment with
+   `sample.js --endpoint`, not through the script, and wait on Lucas setting `VV_PROSE=on` on Preview only.
  THE CHOICE IS CODE-WRITTEN PROSE (the model only
    orders and voices sentences code builds from the page) OR NO PROSE. Both are honest.**
    **OPTION 5, PROSE BACK WITH A KNOWN KIND 1 RATE, IS OFF THE TABLE PERMANENTLY (Lucas,
