@@ -672,6 +672,13 @@ kind 4 failures; a widened list "caught" both only by matching the wrong sentenc
    PREVIEW: sample 2 6 of 6 (114 sentences), sample 1 7 of 12 (verdicts 5 of 8, notes 2 of 4, 140 sentences), every
    failure "the headline was deleted" on tie pairs and cards, 20 to 53 seconds a piece in the function. The tools
    wait on the key, which is not on this machine. Pass 2 at 09:19 UTC after the sample rows are cleared.**
+   **PASS 1 READ (the key arrived at `~/.config/anthropic/vv.key`): 14 tool flags, 13 the tools' own (per-90 figures
+   bound to count words because the 90 of "per 90" was cut from the unit window; an honours count inflated by the
+   PROOF segment on the line), 1 real ("as P1 states", a fact id in prose: writer rule added). THE HEADLINE DEATHS,
+   reproduced locally: a league in the headline uncited (the example citation steered to P1, A2, B2; now A1 and B1
+   are in it) and, on the second attempt, tag counts off by the career-stage tags because the writer never saw the
+   totals (now the first line of its facts). Both closed; pass 2 runs on the closed rules; the two-clean-runs count
+   for notes starts there. Lists: `_local/verdict-check/fresh_endpoint_pass_1_lists.md`, `fresh2_endpoint_pass_1_lists.md`.**
  THE CHOICE IS CODE-WRITTEN PROSE (the model only
    orders and voices sentences code builds from the page) OR NO PROSE. Both are honest.**
    **OPTION 5, PROSE BACK WITH A KNOWN KIND 1 RATE, IS OFF THE TABLE PERMANENTLY (Lucas,
