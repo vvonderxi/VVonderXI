@@ -61,6 +61,8 @@ Do not flip now; it would ship the old writer. Approve the port with the proof s
 
 ## THE NOTES' TWO PASSES ON THE RULES THEY WOULD SHIP (2026-10-25, passes 4 and 5, 13:09 and 14:10 UTC, the same build)
 
+**[THE FLIP TO `on` HAPPENED ON 2026-10-26 AT 17:36 UTC, LUCAS'S DECISION AFTER READING BOTH PASSES' NOTES LISTS: env change and `vercel redeploy` of the live build, aliased in 12 seconds, `check-deployed` 45 of 45, the first Production notes generation (Lautaro 23/24) in 19.5 seconds. The record is CLAUDE.md, 2026-10-26.]**
+
 The card's glance line, Scout Report and Notes were gated on two clean passes on the rules they would actually ship, since the cabinet rule and the NR wording landed after passes 2 and 3. Both passes ran through the branch preview built from `8cb7fbe`, whose code is byte for byte the Production deploy `d17e3fe` (the difference is documentation), with the sample rows cleared between.
 
 | | Pass 4 | Pass 5 |
