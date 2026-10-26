@@ -324,6 +324,14 @@ const expect = (name, cond) => { console.log((cond ? 'ok   ' : 'FAIL ') + name);
   expect('verdict ranking gate: a wrong "strongest dimension" in p1 is deleted by code, the right one kept', jvu(aMax[aMax.length - 1][0] + ' is his strongest').why.some(w => /^ranking:/.test(w)) && jvu(aMax[0][0] + ' is his strongest').kept);
   expect('verdict ranking gate: the head to head\'s cross-player comparison is left to the narrow check', jvu("Messi's Creation sits above").kept);
   expect('a tag is not a rating: "rated Clinical" is deleted', jvu('The page names Messi, rated').why.some(w => /calls a tag a rating/.test(w)));
+  // the meaning audit (Lucas, 2026-10-26): facts whose meaning depends on context the writer does not have
+  const dbp2 = C.verdictFacts(EV.items.find(x => x.id === 'debruyne1718-pogba1819')), wc = dbp2.facts.find(f => f.side === 'B' && /World Cup Winner/.test(f.text));
+  expect('meaning: a World Cup on a club card is won with his country, before the season and not with the club', !!wc && /won with his country at the 2018 tournament, before this club season and not with Manchester United/.test(wc.text));
+  expect('meaning: a shelf row says it names no club', /the shelf names no club/.test(hamCab[0].text));
+  expect('meaning: "Reliability at the 94th percentile" is deleted, a cited 96th percentile passes, a difference of two cited percentiles passes', C.numbersOk('His Reliability sits at the 76th percentile.', osiN.facts[7].text, [osiN.facts[7]], osiN.facts).some(w => /called a percentile/.test(w)) && C.numbersOk('Goal Threat at the 96th percentile.', osiN.facts[3].text, [osiN.facts[3]], osiN.facts).length === 0 && C.numbersOk('Goal Threat is 36 percentile points above Creation.', osiN.facts[3].text + '\n' + osiN.facts[4].text, [osiN.facts[3], osiN.facts[4]], osiN.facts).length === 0);
+  const jm = await C.judgeDraft(osiN, { glance: [ok('Osimhen made 32 starts for Napoli.', ['A1', osiN.facts[2].id])], scout: [ok('He kept two clean sheets.', [osiN.facts[2].id]), ok('He scored 0.90 goals per 90 minutes.', [osiN.facts[8].id])], notes: [[ok('Peak reads: "The best season of his career, and a genuinely elite one."', [osiN.facts.find(f => /^Tag: Peak/.test(f.text)).id])], [ok('Goal Threat is his strongest dimension.', [osiN.facts[3].id]), ok('Defensive is his weakest.', [osiN.facts[6].id])]] }, narrow);
+  expect('meaning: "starts" and "clean sheets" are measures no outfield card prints, deleted', jm.units[0].why.some(w => /names a measure no card prints/.test(w)) && jm.units[1].why.some(w => /names a measure no card prints/.test(w)));
+  expect('meaning: the writer is told a shelf honour names no club and a World Cup is his country\'s', /A shelf honour names no club/.test(C.writerSystem(osiN)) && /A World Cup is won with his country/.test(C.writerSystem(osiN)));
   console.log(fails ? `\nCITED SELFTEST FAIL (${fails})` : '\nCITED SELFTEST PASS');
   process.exit(fails ? 1 : 0);
 })();

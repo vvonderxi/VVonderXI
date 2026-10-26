@@ -42,9 +42,16 @@ const REJECT_SHARE = 0.25;
 /* ---------- THE FACT LIST ---------- */
 const LABEL_TO_TYPE = {};
 for (const [k, m] of Object.entries(V.HONOUR_META)) LABEL_TO_TYPE[m.label] = k;
-function honourFact(label, wonBy, shelfYear) {
+/*  MEANING, NOT JUST PRESENCE (Lucas, 2026-10-26, after the Cabinet fault: "the citation rule guarantees a sentence rests on
+    a printed fact; it does not guarantee the sentence means what the fact means"). A World Cup is matched to the club season
+    that follows it and sits among "this season's" honours by design (docs/CABINET_SPEC.md), with wonBy "team": read
+    literally, "won with his team" on a Manchester United card is a World Cup won with Manchester United. The fact now says
+    what it means. The same audit put the club on a shelf row's absence (cabinetFact) and bound "percentile" to a cited
+    percentile (numbersOk).  */
+function honourFact(label, wonBy, shelfYear, ctx) {
   const type = LABEL_TO_TYPE[label];
   const line = type && V.HONOUR_ONELINER[type];
+  if (type === 'world_cup_winner') return `Honour this season: World Cup Winner, won with his country at the ${ctx && ctx.year ? ctx.year + ' ' : ''}tournament, before this club season and not with ${ctx && ctx.club ? ctx.club : 'his club'}` + (line ? `. The card says: "${line}"` : '');
   const who = wonBy === 'team' ? 'won with his team' : 'won by him';
   return `Honour this season: ${label}, ${who}` + (shelfYear != null ? `, and it is this season's own entry on the Cabinet shelf, dated ${shelfYear}, not an earlier one` : '') + (line ? `. The card says: "${line}"` : '');
 }
@@ -58,7 +65,8 @@ function honourFact(label, wonBy, shelfYear) {
     Boot: page-consistent, false as any reader reads it. So a shelf row that is this season's honour is stated on
     the honour fact (honourFact's shelfYear), and this fact is written only for a row from an earlier season.  */
 function cabinetFact(name, label, year, wonBy) {
-  return `${name}'s Cabinet, an earlier honour on the shelf: ${label}${year ? ' (' + year + ')' : ''}, ${wonBy === 'team' ? 'won with his team' : 'won by him'}`;
+  const who = LABEL_TO_TYPE[label] === 'world_cup_winner' ? 'won with his country' : wonBy === 'team' ? 'won with his team' : 'won by him';
+  return `${name}'s Cabinet, an earlier honour on the shelf: ${label}${year ? ' (' + year + ')' : ''}, ${who}; the shelf names no club, so it cannot be said which club it was won with`;
 }
 function seasonYearOf(season) { const m = String(season || '').match(/^(\d\d)\/\d\d$/); if (!m) return null; const y = +m[1]; return y < 50 ? 2000 + y : 1900 + y; }
 function ord(n) { n = +n; const t = n % 100, u = n % 10; return n + (t >= 11 && t <= 13 ? 'th' : u === 1 ? 'st' : u === 2 ? 'nd' : u === 3 ? 'rd' : 'th'); }
@@ -110,8 +118,8 @@ function sideFacts(line, P) {
       10-22. The fact list follows the page, never the other way round. The card's notes keep both.  */
   const H = g(/HONOURS: (.*?); (?:PROOF per 90|CABINET|CAREER STAGE|TAG MEANINGS|\d+ min)/) || '';
   for (const h of (H ? H.split(/; (?=[A-Z])/) : [])) {
-    const m = h.match(/^(.+?) \d{4} \((player|team)\)/);
-    if (m) F.push(honourFact(m[1], m[2]));
+    const m = h.match(/^(.+?) (\d{4}) \((player|team)\)/);
+    if (m) F.push(honourFact(m[1], m[3], null, { club, year: m[2] }));
   }
   /*  NO CABINET FACTS ON A COMPARISON (Lucas, 2026-10-24): the Compare page does not print the Cabinet, so a
       verdict's reader cannot check it. The card's notes keep them (notesFacts).  */
@@ -172,7 +180,7 @@ function notesFacts(player) {
   if (P.key_passes_per90 != null && !hasRow('key passes')) F.push(`${nm}: ${Number(P.key_passes_per90).toFixed(2)} key passes per 90 minutes`);
   const sy = seasonYearOf(P.season), season = P.honours || [], shelf = P.cabinet || [];
   const thisSeasons = c => season.some(h => h.honour === c.honour && (h.year != null ? +h.year === +c.year : (sy != null && +c.year === sy)));
-  for (const h of season) { const own = shelf.find(c => c.honour === h.honour && thisSeasons(c)); F.push(honourFact(h.honour, h.won_by, own ? own.year : null)); }
+  for (const h of season) { const own = shelf.find(c => c.honour === h.honour && thisSeasons(c)); F.push(honourFact(h.honour, h.won_by, own ? own.year : null, { club: P.club, year: h.year })); }
   for (const h of shelf) if (!thisSeasons(h)) F.push(cabinetFact(nm, h.honour, h.year, h.won_by));
   /*  THE CARD'S PROOF PANEL (2026-10-24): the pool's three rows, total and per 90, as renderProof prints them.
       A defender's card is tackles, interceptions and blocks, and the writer had none of it.  */
@@ -213,7 +221,7 @@ CROWNS. A sentence that names, implies or leans towards an overall winner of the
 ON A CARD (the notes), THREE MORE RULES, ALL ENFORCED IN CODE:
 - EACH FACT IS CITED BY ONE SENTENCE ONLY. A sentence that cites a fact an earlier sentence already cited is deleted. The exceptions: the identity fact A1, which any sentence naming the club, league or age must cite; the glance line, whose fact may be stated once more in the body; and an honour or tag fact, which a count sentence and its one quotation may both cite. The card copy itself is printed once: a second quotation of the same honour or tag line is deleted. So a figure is stated once and never restated. Write fewer sentences than there are facts. In the honours-and-tags stanza, one honour or tag a sentence, quoted in the card's words.
 - RANKING WITHIN THE CARD IS ALLOWED, JUDGEMENT IS NOT. You may say which dimension is strongest or weakest, or that one attribute is above or below another, by naming them with their card names (Goal Threat, Creation, Progression, Defensive, Reliability) in the same clause; the code checks the order against the figures and deletes the sentence when it is wrong. "Goal Threat at the 96th percentile is his strongest dimension" lives. A sentence that ranks, compares or praises without naming the attributes it ranks is deleted: "his finishing was the best part of his game" dies, and so does "more goals than assists". Strongest and weakest are among the four dimensions; above and below set any two of the five attributes against each other, one named before the word and one after. The "opinion or judgement" allowed above is for a comparison; on a card there is none.
-- THE CABINET SHELF IS "AS OF THIS SEASON", SO THIS SEASON'S HONOUR SITS THERE TOO. A Cabinet fact in this list is an EARLIER honour only: say "before this season" or "an earlier". Never write that an honour is his first; the card cannot know what he won off the Index, and the sentence is deleted. A second or repeat honour ("a second Golden Boot, after 2022's") must cite the Cabinet fact that holds the earlier one and is deleted otherwise.
+- THE CABINET SHELF IS "AS OF THIS SEASON", SO THIS SEASON'S HONOUR SITS THERE TOO. A Cabinet fact in this list is an EARLIER honour only: say "before this season" or "an earlier". Never write that an honour is his first; the card cannot know what he won off the Index, and the sentence is deleted. A second or repeat honour ("a second Golden Boot, after 2022's") must cite the Cabinet fact that holds the earlier one and is deleted otherwise. A shelf honour names no club: never say which club an earlier honour was won with. A World Cup is won with his country, never with the club on the card, and it sits among this season's honours because the tournament came before the season.
 
 NEVER WRITE A FACT ID IN A SENTENCE ("as P1 states", "see A3"): the ids are for the "cite" list only, and a sentence that mentions one is deleted.
 
@@ -343,7 +351,7 @@ function engagesBothSides(pack, u) {
   const other = sides.has('A') ? pack.names.B : sides.has('B') ? pack.names.A : null;
   return other ? nameRe(other).test(u.s) : true;
 }
-const MEASURE = /\b(duels?|dribbl\w*|penalt(?:y|ies)(?! area))\b/i;
+const MEASURE = /\b(duels?|dribbl\w*|penalt(?:y|ies)(?! area)|starts?|clean sheets?|saves?|aerial\w*|crosses|expected goals|xg)\b/i;   // starts, clean sheets, saves, aerials, crosses and xG added 2026-10-26: appearances are not starts, and none of these is printed on an outfield card
 /*  A COUNT OF THE CITED FACTS OF ONE KIND IS A NUMBER THE READER CAN CHECK (Lucas, 2026-10-24).
     The first fresh-sample run deleted 40 sentences for a number not in the cited facts, and about
     half were counts of the facts the sentence itself cited: "four honours on a single card" citing
@@ -395,9 +403,15 @@ function numbersOk(sentence, citedText, citedFacts, allFacts) {
       out of 100); one that exists only as a percentile is deleted.  */
   const pctIn = new Set(); for (const f of citedFacts || []) (String(f.text).match(/(\d+)%|Reliability: (\d+) out of 100/g) || []).forEach(m => pctIn.add(+m.replace(/\D/g, '')));
   const pctWrong = PC.extractNumbers(sentence).filter(x => x.unit === 'pct' && !pctIn.has(x.value) && (citedFacts || []).some(f => new RegExp('\\b' + x.value + '(?:st|nd|rd|th) percentile').test(f.text))).map(x => x.raw + ' called a percentage, it is a percentile');
+  /*  A NUMBER CALLED A PERCENTILE MUST BE A PERCENTILE IN THE CITED FACTS, OR A DIFFERENCE OF TWO (2026-10-26, the meaning
+      audit): Reliability is out of 100 and the page's caption already misdescribes it as a percentile (§D), so "Reliability
+      at the 94th percentile" was one misreading away and no rule saw it.  */
+  const pctileIn = new Set(); for (const f of citedFacts || []) (String(f.text).match(/(\d+)(?:st|nd|rd|th) percentile/g) || []).forEach(m => pctileIn.add(+m.replace(/\D/g, '')));
+  const pctileOk = new Set(pctileIn); for (const a of pctileIn) for (const b of pctileIn) pctileOk.add(Math.abs(a - b));
+  const pctileWrong = PC.extractNumbers(sentence).filter(x => x.unit === 'percentile' && !pctileOk.has(x.value)).map(x => x.raw + ' called a percentile, and no cited fact prints it as one');
   const bad = PC.extractNumbers(sentence).filter(x => x.unit === 'dimensions' ? !(x.value >= 1 && x.value <= dimTotal)
     : BOUND[x.unit] ? !(kindSet[BOUND[x.unit]] || new Set()).has(x.value) : !vals.has(x.value)).map(x => x.raw);
-  return bad.concat(pctWrong);
+  return bad.concat(pctWrong, pctileWrong);
 }
 /* ---------- RANKING WITHIN THE CARD (code), 2026-10-26 ---------- */
 /*  LUCAS'S LINE: "Goal Threat at 96 is his strongest dimension" is a relation between two printed numbers; "his finishing
