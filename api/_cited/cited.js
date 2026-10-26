@@ -257,7 +257,7 @@ const NOTES_FORMAT = `{"glance": [{"s": "one sentence, one fact of the season, p
 function writerSystem(pack) {
   const rule = pack.type === 'notes' ? 'This is a single season: there is no comparison and no crown.'
     : pack.winner ? `P1 names ${pack.names[pack.winner]} as the winner: you may name ${pack.names[pack.winner]}, and only ${pack.names[pack.winner]}, as the winner, as clearly as P1 does. The headline MUST name ${pack.names[pack.winner]}.`
-    : `P1 says the Index cannot separate these two: NO sentence may name, imply or lean towards a winner. Banned outright: ${BANNED_CROWNS}, and every near variant. Say what each season holds that the other does not.`;
+    : `P1 says the Index cannot separate these two: NO sentence may name, imply or lean towards a winner. Banned outright: ${BANNED_CROWNS}, and every near variant. Say what each season holds that the other does not. THE HEADLINE ON A TIE PUTS EACH SCORE BESIDE ITS OWN NAME ("${pack.names.A} 93, ${pack.names.B} 91"), NEVER "both scoring 93 and 91" or "both Iconic at 93 and 91": the check reads that as each holding both, deletes the headline, and the piece is thrown away.`;
   return WRITER_SYSTEM.replace('${\'{CROWN_RULE}\'}', rule).replace('{CROWN_RULE}', rule).replace('{FORMAT}', pack.type === 'notes' ? NOTES_FORMAT : VERDICT_FORMAT);
 }
 function factsText(pack) {
@@ -415,9 +415,10 @@ const SUP_MIN = /\b(weakest|lowest|worst|least \w+|smallest|softest|weak spot|we
 /*  "more goals than assists" has up to three words between the comparative and "than"; both halves are the mark.  */
 const CMP_GT = /\b(above|ahead of|exceeds?|outstrips?|surpasses?|outscores?|eclipses?|dwarfs?|(?:more|greater|higher|stronger|better|bigger|larger)\b(?:\s+\w+){0,3}\s+than)\b/gi;
 const CMP_LT = /\b(below|behind|trails?|lags?|(?:less|fewer|lower|weaker|worse|smaller)\b(?:\s+\w+){0,3}\s+than)\b/gi;
-function cardAttributes(pack) {
+function cardAttributes(pack, side) {
   const v = {};
   for (const f of pack.facts) {
+    if (side && f.side !== side) continue;
     let m = f.text.match(/'s (Goal Threat|Creation|Progression|Defensive): (\d+)(?:st|nd|rd|th) percentile/); if (m) v[m[1]] = +m[2];
     m = f.text.match(/'s Reliability: (\d+) out of 100/); if (m) v.Reliability = +m[1];
   }
@@ -430,8 +431,8 @@ function stripCopy(s, pack) {
   for (const c of copyLines(pack)) for (const p of [c].concat(c.split(/(?<=[.!?])\s+/))) if (p.replace(/[^\p{L}]/gu, '').length >= 8) t = t.replace(new RegExp(esc(p.replace(/[.!?]$/, '')), 'gi'), ' ');
   return t.replace(/"[^"]*"/g, ' ').replace(/'[^']{12,}'/g, ' ');
 }
-function rankingOk(pack, sentence) {
-  const vals = cardAttributes(pack), why = [];
+function rankingOk(pack, sentence, side) {
+  const vals = cardAttributes(pack, side), why = [];
   const t = stripCopy(sentence, pack);
   const names = txt => { const out = []; for (const a of ATTRS) { const re = new RegExp('\\b' + a + '\\b', 'gi'); let m; while ((m = re.exec(txt))) out.push({ name: a, at: m.index }); } return out.sort((x, y) => x.at - y.at); };
   const dims = ATTRS.slice(0, 4).filter(a => vals[a] != null);
@@ -531,6 +532,15 @@ async function judgeDraft(pack, draft, narrow = narrowCheck) {
     if (/\bcabinets?\b/i.test(u.s) && !kinds.has('cabinet') && !citedFacts.some(f => /on the Cabinet shelf/.test(f.text))) why.push('says cabinet without citing a Cabinet fact');   // an honour fact that names this season's own shelf entry counts (2026-10-26)
     if (/\btags?\b/i.test(u.s) && !kinds.has('tag')) why.push('says tag without citing a tag fact');
     if (pack.type === 'notes') { rankingOk(pack, u.s).forEach(w => why.push('ranking: ' + w)); honourRepeatOk(pack, u.s, citedFacts).forEach(w => why.push('honour: ' + w)); }
+    /*  THE GATE ON A COMPARISON'S OWN-PLAYER PARAGRAPHS (pass 6, 2026-10-26): told the card's ranking rule, the writer ranked
+        inside verdicts too, and wrongly ("Progression at the 95th percentile is his strongest dimension" beside a Goal
+        Threat at the 97th) in both pieces sample 1 lost. The narrow check caught them; the code now does, against that
+        player's own figures, on p1 and p2 when the sentence does not name the other player. The head to head and the
+        verdict set one player against the other and stay with the narrow check.  */
+    if (pack.type === 'verdict' && (u.field === 'p1' || u.field === 'p2') && !engagesBothSides(pack, u)) rankingOk(pack, u.s, u.field === 'p1' ? 'A' : 'B').forEach(w => why.push('ranking: ' + w));
+    /*  A TAG IS NOT A RATING (pass 6: "His VV Score is 87, rated Peak"). A tag name after rated, marked, graded or banded is deleted.  */
+    const tagNames = pack.facts.map(f => (f.text.match(/^Tag: (.+?)\. The card says/) || [])[1]).filter(Boolean);
+    if (tagNames.some(n => new RegExp('\\b(?:rated|marked|graded|banded)\\s+(?:as\\s+)?(?:an?\\s+)?' + esc(n) + '\\b', 'i').test(u.s))) why.push('calls a tag a rating (rated, marked or graded with a tag name)');
     u.code = why.slice();
   }
   /*  EACH FACT ONCE, EACH QUOTE ONCE, ON A CARD (Lucas, 2026-10-26). In order of reading: a sentence that cites a fact an
