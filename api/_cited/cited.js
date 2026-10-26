@@ -42,18 +42,25 @@ const REJECT_SHARE = 0.25;
 /* ---------- THE FACT LIST ---------- */
 const LABEL_TO_TYPE = {};
 for (const [k, m] of Object.entries(V.HONOUR_META)) LABEL_TO_TYPE[m.label] = k;
-function honourFact(label, wonBy) {
+function honourFact(label, wonBy, shelfYear) {
   const type = LABEL_TO_TYPE[label];
   const line = type && V.HONOUR_ONELINER[type];
   const who = wonBy === 'team' ? 'won with his team' : 'won by him';
-  return `Honour this season: ${label}, ${who}` + (line ? `. The card says: "${line}"` : '');
+  return `Honour this season: ${label}, ${who}` + (shelfYear != null ? `, and it is this season's own entry on the Cabinet shelf, dated ${shelfYear}, not an earlier one` : '') + (line ? `. The card says: "${line}"` : '');
 }
 /*  A CABINET LINE IS WHAT HE HAD WON BY THIS SEASON, NOT THIS SEASON'S HONOUR (Lucas, 2026-10-24: "add Cabinet
     lines to the fact list rather than restricting 'only' claims; giving the writer the page's own content is
     the move that keeps working"). The year is the one the card prints beside the shelf.  */
+/*  A CABINET FACT IS AN EARLIER HONOUR, NEVER THIS SEASON'S (2026-10-26). The shelf is "as of this season", inclusive
+    (docs/CABINET_SPEC.md: an honour appears on the face and on the shelf in the season it is won), and the payload's
+    cabinet rows include this season's honour with this season's year. Passes 4 and 5 shipped "by this season he
+    already held a Golden Boot in his cabinet, won in 2022" on Osimhen 22/23, whose only shelf row IS that Golden
+    Boot: page-consistent, false as any reader reads it. So a shelf row that is this season's honour is stated on
+    the honour fact (honourFact's shelfYear), and this fact is written only for a row from an earlier season.  */
 function cabinetFact(name, label, year, wonBy) {
-  return `${name}'s Cabinet, what he had won by this season: ${label}${year ? ' (' + year + ')' : ''}, ${wonBy === 'team' ? 'won with his team' : 'won by him'}`;
+  return `${name}'s Cabinet, an earlier honour on the shelf: ${label}${year ? ' (' + year + ')' : ''}, ${wonBy === 'team' ? 'won with his team' : 'won by him'}`;
 }
+function seasonYearOf(season) { const m = String(season || '').match(/^(\d\d)\/\d\d$/); if (!m) return null; const y = +m[1]; return y < 50 ? 2000 + y : 1900 + y; }
 function ord(n) { n = +n; const t = n % 100, u = n % 10; return n + (t >= 11 && t <= 13 ? 'th' : u === 1 ? 'st' : u === 2 ? 'nd' : u === 3 ? 'rd' : 'th'); }
 function tagFact(tag, means) { return `Tag: ${tag}. The card says: "${means}"`; }
 /*  THE BAND ONLY WHEN THE PAGE PRINTS IT (Lucas, 2026-10-24). The first fresh-sample run shipped one
@@ -154,16 +161,27 @@ function notesFacts(player) {
     if (x.percentile_in_pool != null) F.push(`${nm}'s ${NAMES[k] || k}: ${ord(x.percentile_in_pool)} percentile among ${P.pool} seasons`);
     if (x.pct_of_full_season != null) F.push(reliabilityFact(nm, x.pct_of_full_season));
   }
-  if (P.shots_total != null && P.goals != null) F.push(`${nm}: ${P.goals} goals from ${P.shots_total} shots`);
-  if (P.key_passes_per90 != null) F.push(`${nm}: ${Number(P.key_passes_per90).toFixed(2)} key passes per 90 minutes`);
-  for (const h of (P.honours || [])) F.push(honourFact(h.honour, h.won_by));
-  for (const h of (P.cabinet || [])) F.push(cabinetFact(nm, h.honour, h.year, h.won_by));
+  /*  EACH FIGURE LIVES IN ONE FACT (2026-10-26, Lucas: "Watkins gives the same 19-from-86 three ways"). The goals
+      total sat in the totals fact, the "goals from shots" fact and the Proof panel's goals row, so the once-a-fact
+      rule below could not stop a figure recurring. Now: the totals fact holds goals and assists; a Proof row whose
+      total the totals fact already holds states its per-90 rate only; the "goals from shots" fact is written only
+      when the Proof panel has no shots row, and the key-passes fact only when it has no key-passes row. Every figure
+      is still one the card prints, in the form the card prints it.  */
+  const rows = P.proof_rows || [], rowLabel = r => String(r.label || '').toLowerCase(), hasRow = l => rows.some(r => rowLabel(r) === l);
+  if (P.shots_total != null && P.goals != null && !hasRow('shots')) F.push(`${nm}: ${P.goals} goals from ${P.shots_total} shots`);
+  if (P.key_passes_per90 != null && !hasRow('key passes')) F.push(`${nm}: ${Number(P.key_passes_per90).toFixed(2)} key passes per 90 minutes`);
+  const sy = seasonYearOf(P.season), season = P.honours || [], shelf = P.cabinet || [];
+  const thisSeasons = c => season.some(h => h.honour === c.honour && (h.year != null ? +h.year === +c.year : (sy != null && +c.year === sy)));
+  for (const h of season) { const own = shelf.find(c => c.honour === h.honour && thisSeasons(c)); F.push(honourFact(h.honour, h.won_by, own ? own.year : null)); }
+  for (const h of shelf) if (!thisSeasons(h)) F.push(cabinetFact(nm, h.honour, h.year, h.won_by));
   /*  THE CARD'S PROOF PANEL (2026-10-24): the pool's three rows, total and per 90, as renderProof prints them.
       A defender's card is tackles, interceptions and blocks, and the writer had none of it.  */
-  for (const r of (P.proof_rows || [])) {
-    const label = String(r.label || '').toLowerCase();
+  for (const r of rows) {
+    const label = rowLabel(r);
+    const held = (label === 'goals' && P.goals != null && +r.total === +P.goals) || (label === 'assists' && P.assists != null && +r.total === +P.assists);
     if (r.total == null && r.per90 == null) F.push(`${nm}: ${label} not recorded this season (the card prints NR)`);
-    else F.push(`${nm}: ${r.total != null ? r.total : 'NR'} ${label} in all, ${r.per90 != null ? Number(r.per90).toFixed(2) : 'NR'} per 90 minutes`);
+    else if (held && r.per90 != null) F.push(`${nm}: ${Number(r.per90).toFixed(2)} ${label} per 90 minutes`);
+    else if (!held) F.push(`${nm}: ${r.total != null ? r.total : 'NR'} ${label} in all, ${r.per90 != null ? Number(r.per90).toFixed(2) : 'NR'} per 90 minutes`);
   }
   for (const t of (P.tag_glosses || [])) F.push(tagFact(t.tag, t.means));
   if (/^pre-2015/.test(P.era || '')) F.push(`${nm}'s season is from before 2015: only appearances, minutes, goals and assists were recorded; every other measure is absent, not zero`);
@@ -191,6 +209,11 @@ YOU MAY: restate a fact in your own words; compare cited facts ("the higher Crea
 YOU MAY NOT state anything the facts do not hold, however true of football: transfers, arrivals or debuts; other seasons, earlier or later clubs, career history; records and firsts; title races, league positions, trophies or awards not in the facts, or a fuller name for an award than the facts give; how strong or difficult a league, team, club or opponent was; managers, team-mates, matches, dates or moments; how a player plays, moves or looks.
 
 CROWNS. A sentence that names, implies or leans towards an overall winner of the comparison, the better season taken whole, is a crown. A lead in one measure, an honour or tag the other does not hold, or a higher figure stated as a figure is NOT a crown and may be written on any pair. ${'{CROWN_RULE}'} A crown must cite P1.
+
+ON A CARD (the notes), THREE MORE RULES, ALL ENFORCED IN CODE:
+- EACH FACT IS CITED BY ONE SENTENCE ONLY. A sentence that cites a fact an earlier sentence already cited is deleted. The exceptions: the identity fact A1, which any sentence naming the club, league or age must cite; the glance line, whose fact may be stated once more in the body; and an honour or tag fact, which a count sentence and its one quotation may both cite. The card copy itself is printed once: a second quotation of the same honour or tag line is deleted. So a figure is stated once and never restated. Write fewer sentences than there are facts. In the honours-and-tags stanza, one honour or tag a sentence, quoted in the card's words.
+- RANKING WITHIN THE CARD IS ALLOWED, JUDGEMENT IS NOT. You may say which dimension is strongest or weakest, or that one attribute is above or below another, by naming them with their card names (Goal Threat, Creation, Progression, Defensive, Reliability) in the same clause; the code checks the order against the figures and deletes the sentence when it is wrong. "Goal Threat at the 96th percentile is his strongest dimension" lives. A sentence that ranks, compares or praises without naming the attributes it ranks is deleted: "his finishing was the best part of his game" dies, and so does "more goals than assists". Strongest and weakest are among the four dimensions; above and below set any two of the five attributes against each other, one named before the word and one after. The "opinion or judgement" allowed above is for a comparison; on a card there is none.
+- THE CABINET SHELF IS "AS OF THIS SEASON", SO THIS SEASON'S HONOUR SITS THERE TOO. A Cabinet fact in this list is an EARLIER honour only: say "before this season" or "an earlier". Never write that an honour is his first; the card cannot know what he won off the Index, and the sentence is deleted. A second or repeat honour ("a second Golden Boot, after 2022's") must cite the Cabinet fact that holds the earlier one and is deleted otherwise.
 
 NEVER WRITE A FACT ID IN A SENTENCE ("as P1 states", "see A3"): the ids are for the "cite" list only, and a sentence that mentions one is deleted.
 
@@ -224,9 +247,13 @@ const VERDICT_FORMAT = `{"who": [{"s": "one sentence, a headline of at most 14 w
     fact id: the narrow check deleted about a third of every notes piece. The share rule is not relaxed,
     it is what stops a gutted piece shipping and notes need it more than verdicts. The scout and the
     closing stanza now ask for figures and the card's own copy only.  */
-const NOTES_FORMAT = `{"glance": [{"s": "one sentence, one fact of the season, plainly", "cite": ["A1", "A2", "A3"]}],
- "scout": [4 to 5 sentences, FIGURES AND CARD COPY ONLY: each sentence states a figure from the facts or quotes the meaning the card gives an honour or tag; no judgement, no verdict on the season, nothing a fact id cannot carry],
- "notes": [[4 to 5 sentences], [4 to 5], [4 to 5], [3 to 4]]}   four stanzas: the figures that define the season; the honours and tags, in the card's own words; the dimensions and Reliability as evidence; a closing stanza of 3 to 4 sentences that is FIGURES AND CARD COPY ONLY, restating the two or three figures the season rests on, no judgement and no flourish`;
+/*  THE NOTES FORM, SHORTER, EACH BLOCK ONE JOB (Lucas, 2026-10-26, after the flip: "correct and they repeat themselves").
+    Four stanzas of 4 to 5 sentences from about eighteen facts was one sentence a fact, and the closing stanza was told to
+    restate: the only way to fill it was repetition. Now three blocks with distinct jobs and fewer sentences than facts,
+    and the once-a-fact rule in judgeDraft makes restating a deletion rather than a habit.  */
+const NOTES_FORMAT = `{"glance": [{"s": "one sentence, one fact of the season, plainly", "cite": ["A1", "A3"]}],
+ "scout": [3 to 4 sentences, THE FIGURES AND NOTHING ELSE: the totals, the Proof panel's rows at the decimals given, key passes where the card prints them; each figure stated once; no judgement],
+ "notes": [[3 to 4 sentences], [3 to 4 sentences]]}   two stanzas: first THE HONOURS AND TAGS, this season's honours and the tags in the card's own words, each quoted once, and any earlier honour on the Cabinet shelf stated as earlier; second THE SHAPE OF THE SEASON, the dimensions ranked by their card names (the strongest, the weakest, one above another), Reliability out of 100, and the VV Score with the word the card prints beside it, closing on the score. FEWER SENTENCES THAN FACTS: every fact is cited by one sentence only and nothing is restated`;
 function writerSystem(pack) {
   const rule = pack.type === 'notes' ? 'This is a single season: there is no comparison and no crown.'
     : pack.winner ? `P1 names ${pack.names[pack.winner]} as the winner: you may name ${pack.names[pack.winner]}, and only ${pack.names[pack.winner]}, as the winner, as clearly as P1 does. The headline MUST name ${pack.names[pack.winner]}.`
@@ -276,7 +303,8 @@ function countsLine(pack) {
   const per = {};
   for (const s of Object.keys(pack.names || {})) per[s] = { honour: 0, tag: 0 };   // a side with nothing still gets its line
   for (const f of pack.facts) { const k = factKind(f.text); if (k !== 'honour' && k !== 'tag') continue; const s = f.side || 'P'; per[s] = per[s] || { honour: 0, tag: 0 }; per[s][k]++; }
-  return Object.entries(per).map(([s, c]) => `${pack.names[s] || s}'s card holds ${c.honour} honour${c.honour === 1 ? '' : 's'} and ${c.tag} tag${c.tag === 1 ? '' : 's'} in all (a count of these is correct even when the sentence cites only some)`).join('. ') + '.';
+  const dims = {}; for (const f of pack.facts) { const k = factKind(f.text); if (k === 'dimension' || k === 'reliability') { const s = f.side || 'P'; dims[s] = dims[s] || { d: 0, r: 0 }; dims[s][k === 'dimension' ? 'd' : 'r']++; } }
+  return Object.entries(per).map(([s, c]) => `${pack.names[s] || s}'s card holds ${c.honour} honour${c.honour === 1 ? '' : 's'} and ${c.tag} tag${c.tag === 1 ? '' : 's'} in all (a count of these is correct even when the sentence cites only some)` + (dims[s] ? `, and prints ${dims[s].d} dimension${dims[s].d === 1 ? '' : 's'}${dims[s].r ? ' and Reliability' : ''}` : '')).join('. ') + '.';
 }
 async function narrowCheck(pack, sentence, cites) {
   const facts = pack.facts.filter(f => cites.includes(f.id)).map(f => f.id + '  ' + f.text).join('\n');
@@ -325,7 +353,7 @@ const MEASURE = /\b(duels?|dribbl\w*|penalt(?:y|ies)(?! area))\b/i;
     cited in all and how many per side. Everything else stays strict: the same run's rule caught
     "seven percentile points higher" for a gap of 11, an uncited 3221 minutes, an age no fact holds,
     and "six goals were left in matches he did not start", and it keeps catching them.  */
-const KINDS = [['result', /^The page's own result/], ['honour', /^Honour this season/], ['cabinet', /'s Cabinet, what he had won by this season: /], ['tag', /^Tag: /], ['score', /'s VV Score: /],
+const KINDS = [['result', /^The page's own result/], ['honour', /^Honour this season/], ['cabinet', /'s Cabinet, an earlier honour on the shelf: /], ['tag', /^Tag: /], ['score', /'s VV Score: /],
   ['dimension', /'s (?:Goal Threat|Creation|Progression|Defensive): /], ['reliability', /'s Reliability: /], ['shots', / goals from \d+ shots$/],
   ['keypasses', / key passes per 90 minutes$/], ['proof', / per 90 minutes$| not recorded this season /], ['conversion', /: goal conversion \d+%/],
   ['totals', / goals and \d+ assists in /], ['era', /before 2015/], ['identity', /, age \d+$/]];
@@ -371,6 +399,94 @@ function numbersOk(sentence, citedText, citedFacts, allFacts) {
     : BOUND[x.unit] ? !(kindSet[BOUND[x.unit]] || new Set()).has(x.value) : !vals.has(x.value)).map(x => x.raw);
   return bad.concat(pctWrong);
 }
+/* ---------- RANKING WITHIN THE CARD (code), 2026-10-26 ---------- */
+/*  LUCAS'S LINE: "Goal Threat at 96 is his strongest dimension" is a relation between two printed numbers; "his finishing
+    was the best part of his game" is a judgement. The code tells them apart by one test: a sentence with a ranking word
+    must name, by its card name and in the same clause, the attribute it ranks, and the order it states must be the order
+    the figures give. A ranking that names nothing, or that the code cannot parse into one shape below, is deleted.
+    Shapes: a superlative (strongest, weakest and their kin) governs the nearest dimension name before it in the clause,
+    else the first after, and that dimension must be the maximum (or minimum) of the four; a comparative (above, below,
+    exceeds, trails and their kin) takes the last attribute named before it and the first named after it, any two of the
+    five, and the figures must stand in that order. Card copy that is quoted is stripped first, so Peak's "the best
+    season of his career" is not a ranking. Notes only: a comparison already has its own rules.  */
+const ATTRS = ['Goal Threat', 'Creation', 'Progression', 'Defensive', 'Reliability'];
+const SUP_MAX = /\b(strongest|highest|best|most \w+|dominant|commanding|standout|biggest|largest|greatest)\b/gi;
+const SUP_MIN = /\b(weakest|lowest|worst|least \w+|smallest|softest|weak spot|weakness)\b/gi;
+/*  "more goals than assists" has up to three words between the comparative and "than"; both halves are the mark.  */
+const CMP_GT = /\b(above|ahead of|exceeds?|outstrips?|surpasses?|outscores?|eclipses?|dwarfs?|(?:more|greater|higher|stronger|better|bigger|larger)\b(?:\s+\w+){0,3}\s+than)\b/gi;
+const CMP_LT = /\b(below|behind|trails?|lags?|(?:less|fewer|lower|weaker|worse|smaller)\b(?:\s+\w+){0,3}\s+than)\b/gi;
+function cardAttributes(pack) {
+  const v = {};
+  for (const f of pack.facts) {
+    let m = f.text.match(/'s (Goal Threat|Creation|Progression|Defensive): (\d+)(?:st|nd|rd|th) percentile/); if (m) v[m[1]] = +m[2];
+    m = f.text.match(/'s Reliability: (\d+) out of 100/); if (m) v.Reliability = +m[1];
+  }
+  return v;
+}
+function copyLines(pack) { return pack.facts.map(f => (f.text.match(/The card says: "([^"]+)"/) || [])[1]).filter(Boolean); }
+const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\async function judgeDraft(pack, draft, narrow = narrowCheck) {');
+function stripCopy(s, pack) {
+  let t = s;
+  for (const c of copyLines(pack)) for (const p of [c].concat(c.split(/(?<=[.!?])\s+/))) if (p.replace(/[^\p{L}]/gu, '').length >= 8) t = t.replace(new RegExp(esc(p.replace(/[.!?]$/, '')), 'gi'), ' ');
+  return t.replace(/"[^"]*"/g, ' ').replace(/'[^']{12,}'/g, ' ');
+}
+function rankingOk(pack, sentence) {
+  const vals = cardAttributes(pack), why = [];
+  const t = stripCopy(sentence, pack);
+  const names = txt => { const out = []; for (const a of ATTRS) { const re = new RegExp('\\b' + a + '\\b', 'gi'); let m; while ((m = re.exec(txt))) out.push({ name: a, at: m.index }); } return out.sort((x, y) => x.at - y.at); };
+  const dims = ATTRS.slice(0, 4).filter(a => vals[a] != null);
+  const max = Math.max(...dims.map(a => vals[a])), min = Math.min(...dims.map(a => vals[a]));
+  for (const clause of t.split(/;|\b(?:and|while|but|whereas)\b/i)) {
+    const nm = names(clause);
+    const occ = (re, kind) => { const out = []; re.lastIndex = 0; let m; while ((m = re.exec(clause))) out.push({ kind, word: m[1], at: m.index }); return out; };
+    const marks = occ(SUP_MAX, 'max').concat(occ(SUP_MIN, 'min'), occ(CMP_GT, 'gt'), occ(CMP_LT, 'lt'));
+    for (const k of marks) {
+      if (!nm.length) { why.push(`"${k.word}" ranks nothing the card names (a ranking must name the attribute by its card name)`); continue; }
+      if (k.kind === 'max' || k.kind === 'min') {
+        const before = nm.filter(x => x.at < k.at), target = before.length ? before[before.length - 1] : nm.find(x => x.at > k.at);
+        if (!target) { why.push(`"${k.word}" names no attribute in its clause`); continue; }
+        if (target.name === 'Reliability') { why.push(`"${k.word}" of Reliability: it is not a percentile, and strongest or weakest is among the four dimensions`); continue; }
+        const v = vals[target.name], want = k.kind === 'max' ? max : min;
+        if (v !== want) why.push(`"${k.word}" for ${target.name} (${v}), but the ${k.kind === 'max' ? 'highest' : 'lowest'} dimension is ${want}`);
+      } else {
+        const before = nm.filter(x => x.at < k.at), after = nm.filter(x => x.at > k.at);
+        if (!before.length || !after.length) { why.push(`"${k.word}" does not set one named attribute against another (one before the word, one after)`); continue; }
+        const a = before[before.length - 1].name, b = after[0].name, va = vals[a], vb = vals[b];
+        if (va == null || vb == null) { why.push(`"${k.word}" compares an attribute the card does not print`); continue; }
+        const okOrder = k.kind === 'gt' ? va > vb : va < vb;
+        if (!okOrder) why.push(`"${a} ${k.word} ${b}" is the wrong way round (${va} against ${vb})`);
+      }
+    }
+  }
+  return why;
+}
+/*  A FIRST CANNOT BE KNOWN, A REPEAT MUST CITE THE EARLIER ONE (2026-10-26). "His first Golden Boot" is a claim about every
+    season off the Index; the card holds this season and the shelf as of it, so it is deleted. "A second Golden Boot" is a
+    relation between this season's honour and an earlier shelf row, and must cite that Cabinet fact.  */
+const ORDINAL = { second: 1, third: 2, fourth: 3 };
+function honourRepeatOk(pack, sentence, citedFacts) {
+  const why = [], t = stripCopy(sentence, pack);
+  const labels = [...new Set(pack.facts.map(f => (f.text.match(/^Honour this season: (.+?), won|'s Cabinet, an earlier honour on the shelf: (.+?)(?: \(\d{4}\))?, won/) || []).slice(1).find(Boolean)).filter(Boolean))];
+  const named = labels.filter(l => nameRe(l).test(t));
+  /*  "The first honour reads: ..." is a listing, not a first (local run 2, 2026-10-26, Osimhen): the rule fires on "first"
+      within two words before an honour's name, or "his first" or "a first" beside the name or the word honour.  */
+  const firstOf = l => new RegExp('\\bfirst\\b(?:\\s+\\w+){0,2}\\s+' + esc(l) + '\\b|\\b' + esc(l) + '\\b[^.;]{0,25}\\b(?:his|a) first\\b', 'i');
+  if (named.some(l => firstOf(l).test(t)) || /\b(?:his|a) first honour\b/i.test(t)) why.push('calls an honour his first: the card cannot know a first');
+  const rep = t.match(/\b(second|third|fourth|another|again|repeat(?:ed|s)?|retain(?:ed|s)?|back-to-back|successive|consecutive|once more)\b/i);
+  if (rep) {
+    const need = ORDINAL[rep[1].toLowerCase()] || 1;
+    const prior = l => pack.facts.filter(f => new RegExp("'s Cabinet, an earlier honour on the shelf: " + esc(l) + '\\b').test(f.text));
+    if (!named.length && /\bhonours?\b/i.test(t)) why.push(`"${rep[1]}" honour naming no honour`);
+    for (const l of named) {
+      const p = prior(l);
+      if (p.length < need) why.push(`"${rep[1]}" ${l}: the shelf holds ${p.length} earlier`);
+      else if (!p.some(f => citedFacts.some(c => c.id === f.id))) why.push(`"${rep[1]}" ${l} without citing the Cabinet fact that holds the earlier one`);
+    }
+  }
+  return why;
+}
+const words5 = s => { const w = s.toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, ' ').split(/\s+/).filter(Boolean); const out = []; for (let i = 0; i + 5 <= w.length; i++) out.push(w.slice(i, i + 5).join(' ')); return out; };
+
 async function judgeDraft(pack, draft, narrow = narrowCheck) {
   const ids = new Set(pack.facts.map(f => f.id));
   const fields = pack.type === 'verdict' ? ['who', 'p1', 'p2', 'h2h', 'verdict'] : ['glance', 'scout', 'notes'];
@@ -382,11 +498,11 @@ async function judgeDraft(pack, draft, narrow = narrowCheck) {
     else (Array.isArray(v) ? v : []).forEach(x => units.push({ field: f, para: f, ...asUnit(x) }));
   }
   const usage = [];
-  await Promise.all(units.map(async u => {
+  for (const u of units) {
     u.s = String(u.s || '').trim(); u.cite = Array.isArray(u.cite) ? u.cite.map(String) : [];
     const tail = u.s.match(/\s*\[((?:[ABP]\d+)(?:\s*,\s*[ABP]\d+)*)\]\s*$/);   // "... [A1, A2]" written inline: take the ids, drop the tail
     if (tail) { u.s = u.s.slice(0, tail.index).trim(); for (const id of tail[1].split(/\s*,\s*/)) if (!u.cite.includes(id)) u.cite.push(id); }
-    const why = [];
+    const why = u.why = [];
     if (!u.s) why.push('empty');
     if (!u.cite.length) why.push('cites nothing');
     const unknown = u.cite.filter(c => !ids.has(c));
@@ -412,9 +528,35 @@ async function judgeDraft(pack, draft, narrow = narrowCheck) {
     /*  "CABINET" IS THE CARD'S WORD FOR WHAT HE HAD WON BY THIS SEASON (Lucas, 2026-10-25, pass 2: "the Ballon d'Or and
         the UCL sit in his cabinet from this season alone" was this season's honours in the card's word for a
         different block). The word may name only a Cabinet fact; a comparison has none, so there it is deleted.  */
-    if (/\bcabinets?\b/i.test(u.s) && !kinds.has('cabinet')) why.push('says cabinet without citing a Cabinet fact');
+    if (/\bcabinets?\b/i.test(u.s) && !kinds.has('cabinet') && !citedFacts.some(f => /on the Cabinet shelf/.test(f.text))) why.push('says cabinet without citing a Cabinet fact');   // an honour fact that names this season's own shelf entry counts (2026-10-26)
     if (/\btags?\b/i.test(u.s) && !kinds.has('tag')) why.push('says tag without citing a tag fact');
+    if (pack.type === 'notes') { rankingOk(pack, u.s).forEach(w => why.push('ranking: ' + w)); honourRepeatOk(pack, u.s, citedFacts).forEach(w => why.push('honour: ' + w)); }
     u.code = why.slice();
+  }
+  /*  EACH FACT ONCE, EACH QUOTE ONCE, ON A CARD (Lucas, 2026-10-26). In order of reading: a sentence that cites a fact an
+      earlier surviving sentence already cited is deleted (A1 excepted), and a sentence that prints five running words of
+      card copy an earlier surviving sentence already printed is deleted. Decided on the code-surviving sentences, before
+      the narrow check, so the result is one pass and deterministic.  */
+  if (pack.type === 'notes') {
+    /*  THREE EDGES FROM THE FIRST LOCAL RUN (2026-10-26, 2 of 4 shipped, no loss to repetition): the glance line's fact
+        restated in the body is the lede, not repetition, so the glance's citations are not recorded; a count sentence
+        ("two honours and two tags") must cite honour and tag facts by the binding rule and the quotations must cite the
+        same facts, so honour and tag facts are governed by quote-once (the copy printed once) rather than id-once; the
+        identity fact is exempt as before. Every other fact, a figure or a shelf row, is cited by one sentence.  */
+    const used = new Set(), printed = new Set(), copies = copyLines(pack).map(c => ({ c, w: new Set(words5(c)) })), idf = new Set(identityFacts(pack).map(x => x.id));
+    const kindOf = id => factKind((pack.facts.find(x => x.id === id) || { text: '' }).text), copyKind = id => ['honour', 'tag'].includes(kindOf(id));
+    for (const u of units) {
+      if (u.why.length || u.field === 'glance') continue;
+      const dup = u.cite.filter(c => used.has(c) && !idf.has(c) && !copyKind(c));
+      if (dup.length) { u.why.push(`cites ${dup.join(', ')}, already cited by an earlier sentence (each fact once on a card)`); u.code = u.why.slice(); continue; }
+      const w = new Set(words5(u.s)), quotes = copies.filter(x => [...x.w].some(y => w.has(y))).map(x => x.c);
+      const again = quotes.filter(q => printed.has(q));
+      if (again.length) { u.why.push('repeats card copy an earlier sentence already printed: "' + again[0].slice(0, 40) + '"'); u.code = u.why.slice(); continue; }
+      u.cite.forEach(c => used.add(c)); quotes.forEach(q => printed.add(q));
+    }
+  }
+  await Promise.all(units.map(async u => {
+    const why = u.why;
     if (!why.length) {
       const n = await narrow(pack, u.s, u.cite);
       if (!n.ok) { why.push('narrow check failed to answer: ' + n.error); }
@@ -443,8 +585,12 @@ async function judgeDraft(pack, draft, narrow = narrowCheck) {
     if (!units.some(u => u.field === head && u.kept && re.test(u.s))) reasons.push(`the headline does not name ${nm}, whom the page crowns`);
   }
   const paras = [...new Set(units.filter(u => u.para !== head).map(u => u.para))];
-  const expected = pack.type === 'verdict' ? ['p1', 'p2', 'h2h', 'verdict'] : ['scout', 'notes1', 'notes2', 'notes3', 'notes4'];
-  for (const p of expected) { const k = units.filter(u => u.para === p && u.kept).length; if (k < 2) reasons.push(`${p} has ${k} sentence${k === 1 ? '' : 's'} left`); }
+  const expected = pack.type === 'verdict' ? ['p1', 'p2', 'h2h', 'verdict'] : ['scout', 'notes1', 'notes2'];
+  /*  THE HONOURS-AND-TAGS STANZA CAN ONLY BE AS LONG AS THE CARD'S HONOURS AND TAGS (2026-10-26: Berardi, no honour and
+      two tags, died twice on "notes1 has 1 sentence left"). Its floor is two, or the number of honour, tag and shelf
+      facts when that is smaller; a card with none of them has an empty stanza, dropped by assemble.  */
+  const copyFacts = pack.facts.filter(f => ['honour', 'tag', 'cabinet'].includes(factKind(f.text))).length;
+  for (const p of expected) { const need = p === 'notes1' ? Math.min(2, copyFacts) : 2; const k = units.filter(u => u.para === p && u.kept).length; if (k < need) reasons.push(`${p} has ${k} sentence${k === 1 ? '' : 's'} left`); }
   const dropped = units.filter(u => !u.kept).length;
   if (units.length && dropped / units.length > REJECT_SHARE) reasons.push(`${dropped} of ${units.length} sentences deleted, more than a quarter`);
   if (!units.length) reasons.push('no sentences');
@@ -454,7 +600,7 @@ function assemble(pack, units) {
   const join = list => { let out = ''; list.forEach((u, i) => { out += (i === 0 ? '' : (u.new_paragraph ? '\n\n' : ' ')) + u.s; }); return out; };
   const kept = units.filter(u => u.kept);
   if (pack.type === 'verdict') { const o = {}; for (const f of ['who', 'p1', 'p2', 'h2h', 'verdict']) o[f] = join(kept.filter(u => u.field === f)); return o; }
-  return { glance: join(kept.filter(u => u.field === 'glance')), scout: join(kept.filter(u => u.field === 'scout')), notes: [1, 2, 3, 4].map(k => join(kept.filter(u => u.para === 'notes' + k))) };
+  return { glance: join(kept.filter(u => u.field === 'glance')), scout: join(kept.filter(u => u.field === 'scout')), notes: [1, 2].map(k => join(kept.filter(u => u.para === 'notes' + k))).filter(Boolean) };
 }
 
 /*  ONE PIECE: write, judge, at most one regeneration, then prose or NO PROSE (the default).  */
@@ -477,6 +623,6 @@ async function runPiece(pack) {
     writer's instructions, the narrow check's and both formats are fingerprinted, so an edit to any of them
     stales every cached verdict and note. CITED_REV is bumped by hand for a change to a CODE rule (a drop rule,
     the share, the crown gate), which the fingerprint cannot see.  */
-const CITED_REV = 'c1';
+const CITED_REV = 'c2';   // c2, 2026-10-26: once-a-fact, quote-once, the ranking gate, the honour-repeat rule, two stanzas
 const RULES_VERSION = CITED_REV + '-' + crypto.createHash('sha256').update(WRITER_SYSTEM + NARROW_SYSTEM + VERDICT_FORMAT + NOTES_FORMAT + REJECT_SHARE).digest('hex').slice(0, 8);
-module.exports = { verdictFactsFrom, RULES_VERSION, CITED_REV, WRITER_SYSTEM, verdictFacts, notesFacts, scoreFact, reliabilityFact, nameRe, countsLine, identityFacts, VERDICT_FORMAT, NOTES_FORMAT, writerSystem, factsText, runPiece, judgeDraft, numbersOk, factKind, engagesBothSides, assemble, WRITER_MODEL, CHECK_MODEL, NARROW_SYSTEM };
+module.exports = { rankingOk, honourRepeatOk, stripCopy, cardAttributes, seasonYearOf, verdictFactsFrom, RULES_VERSION, CITED_REV, WRITER_SYSTEM, verdictFacts, notesFacts, scoreFact, reliabilityFact, nameRe, countsLine, identityFacts, VERDICT_FORMAT, NOTES_FORMAT, writerSystem, factsText, runPiece, judgeDraft, numbersOk, factKind, engagesBothSides, assemble, WRITER_MODEL, CHECK_MODEL, NARROW_SYSTEM };

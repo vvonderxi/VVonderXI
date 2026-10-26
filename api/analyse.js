@@ -493,6 +493,10 @@ module.exports = async (req, res) => {
             .select('notes, model, rt, stats_hash, cache_version').eq('card_id', cid).maybeSingle();
           const fresh = row && row.model === MODEL && row.notes && typeof row.notes === 'object'
                      && row.cache_version === CITED.RULES_VERSION && row.stats_hash != null && nHash != null && row.stats_hash === nHash;
+          /*  A HOLD IS A HOLD (2026-10-26): an owner's hold (scripts/prose_hold.js) answers off whatever the row's stamps say,
+              or a rules change on a preview deployment, which shares this cache, would mark the held row stale and this
+              function would regenerate the card the owner held.  */
+          if (row && row.notes && row.notes._held) return res.json({ off: true, cached: true });
           if (fresh && row.notes._noprose) return res.json({ off: true, cached: true });
           if (fresh && typeof row.notes.glance === 'string' && typeof row.notes.scout === 'string' && Array.isArray(row.notes.notes) && row.notes.notes.length) {
             return res.json({ glance: row.notes.glance, scout: row.notes.scout, notes: row.notes.notes, cached: true });
@@ -574,8 +578,9 @@ module.exports = async (req, res) => {
           .select('verdict, winner_card_id, model, rt_a, rt_b, cache_version').eq('pair_key', pairKey).maybeSingle();
         const fresh = row && row.model === MODEL && row.verdict && row.cache_version === verdictVersion
                    && row.rt_a === rtLo && row.rt_b === rtHi;
+        if (row && row.verdict && row.verdict._held) return res.json({ held: true, winner_card_id: winnerId, cached: true });   // a hold is a hold, whatever the stamps (2026-10-26)
         if (fresh) {
-          if (row.verdict._noprose || row.verdict._held) return res.json({ held: true, winner_card_id: winnerId, cached: true });
+          if (row.verdict._noprose) return res.json({ held: true, winner_card_id: winnerId, cached: true });
           const out = swapped ? swapVerdict(row.verdict) : row.verdict;   // remap to requester order
           return res.json({ verdict: out, winner_card_id: winnerId, cached: true });
         }
