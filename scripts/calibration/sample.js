@@ -78,7 +78,7 @@ function report(run) {
   const L = [`# ${run.sample || 'Fresh sample'}, option 1 (cited writer), ${run.at}`, ''];
   const by = o => run.items.filter(r => r.outcome === o).length;
   L.push(`Shipped first time: ${by('shipped')}. Shipped on regeneration: ${by('shipped-on-regeneration')}. No prose: ${by('no-prose')}. Of ${run.items.length}.`);
-  L.push(`Cost: writer and narrow check about $${run.cost_write.toFixed(2)}, the tools about $${(run.cost_tools || 0).toFixed(2)}.`, '');
+  L.push(`Cost: writer and narrow check about ${(run.cost_write || 0).toFixed(2)}, the tools about ${(run.cost_tools || 0).toFixed(2)}.`, '');   // cost_write is null on an endpoint run (2026-10-27: the report threw after the tools had run)
   // worth reading, not only defensible (Lucas, 2026-10-24): sentences written against sentences left, per paragraph
   L.push('## Written against survived (the last attempt; a pass with four of twelve left is not prose anyone wants)', '',
     '| piece | outcome | written | survived | per paragraph, left of written |', '|---|---|---|---|---|');
