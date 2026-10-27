@@ -85,6 +85,10 @@ function extractNumbers(text) {
       v = parseFloat(tk.s);
       const before = t[tk.i - 1], after = t[tk.end];
       if (before === '/' || after === '/' || (/^(19|20)\d\d$/.test(tk.s))) continue;   // seasons and years
+      /*  "LIGUE 1" IS A NAME, NOT A NUMBER (pass 8, 2026-10-27: Ibrahimović v Lacazette's headline died twice; the 1 of
+          "Ligue 1" was back-bound to "honours" three words earlier and failed the honour count). A digit whose previous
+          token is "Ligue" is part of the league's name. The same for "2. Bundesliga" should it ever be printed.  */
+      if (k > 0 && /^(ligue|2\.)$/.test(toks[k - 1].lw)) continue;
     } else if (W10[tk.lw] != null) {
       v = W10[tk.lw];
       const n = toks[k + 1];
