@@ -258,52 +258,39 @@ function stripTagNames(prose) { return String(prose).replace(TAG_NAMES, 'that ta
     which reads the page, is what sees that shape now.  */
 const ARITH = /\b(gap|by|more|fewer|less|extra|combined|total|together|sum|difference|apart|margin|add(?:ed|s)?|plus|between|separat(?:e|es|ed|ing)|clear of|ahead of|behind|short of)\b/i;
 function sentencesOf(text) { return clean(text).replace(/(\d)\.(\d)/g, '$1\u0000$2').match(/[^.!?]+(?:[.!?]+["']?|$)/g) || []; }
+/*  THE TOOLS' NUMBER CHECK IS PAGE MEMBERSHIP, NOT BINDING (2026-10-28, c5; the count in area 9: 35 flags over nine preview
+    passes, 2 real, 33 the binding's). A number in the shipped prose passes if the page prints it anywhere, or if it is a sum
+    or difference of two other numbers stated in the same sentence, or a qualified near-miss of a printed figure. A count
+    of tags or honours must be the page's total or a sum or difference of the two sides' totals; a count of dimensions any
+    number up to the total printed. Everything else is flagged "appears nowhere on the page", which is the one check that
+    found something the server's rule could not (the key-passes rate rounded to one decimal where the page prints two).
+    The old per-unit path, with its back-bindings, is gone; what it alone could see (a true figure stated as the wrong
+    unit) is the sentence judge's, which reads the page.  */
 function checkNumbers(prose, ev) {
   const { F, onPage, sides } = pageFigures(ev), flags = [], unbound = [];
-  const nums = [];
+  const MN = require('./minimal_numbers.js');
   for (const sent of sentencesOf(stripTagNames(prose))) {
-    const xs = extractNumbers(sent.replace(/\u0000/g, '.'));
+    const text = sent.replace(/\u0000/g, '.'), xs = MN.minimalNumbers(text.replace(/"[^"]*"/g, ' " " ')).filter(x => x.unit !== 'ordinal');   // quoted card copy is the page's own words ("one more elite campaign"), not the writer's numbers
     for (const n of xs) {
       const others = xs.filter(o => o !== n).map(o => o.value), stated = new Set();
       for (const a of others) for (const b of others) if (a !== b || others.filter(v => v === a).length > 1) { stated.add(Math.round((a + b) * 100) / 100); stated.add(Math.round(Math.abs(a - b) * 100) / 100); }
-      nums.push(Object.assign(n, { stated }));
+      const why = (u, more) => ({ quote: text.trim(), why: `"${n.raw}" ${more}`, kind: 2, check: 'numbers', unit: u });
+      const qual = (text.slice(0, text.indexOf(n.raw)).match(/(over|more than|almost|nearly|roughly|about|around|some|under|close to)\s*$/) || [])[1] || null;
+      if (n.unit === 'dimensions') {
+        const total = sides.reduce((t, s) => t + Object.keys(s.dims || {}).length, 0);
+        if (!(n.value >= 1 && n.value <= total)) flags.push(why('dimensions', `is a count of dimensions above the ${total} the page prints`));
+        continue;
+      }
+      if (n.unit === 'honours') { if (!derived(F, 'honours').has(n.value)) flags.push(why('honours', 'matches no honours count on the page')); continue; }
+      if (n.unit === 'tags') { if (!derived(F, 'tags').has(n.value)) flags.push(why('tags', `matches no tag count on the page (${[...(F.tags || [])].join(', ') || 'none'}), nor a sum or difference of two`)); continue; }
+      if (n.unit === 'percentile') { if (!(F.percentile || new Set()).has(n.value)) flags.push(why('percentile', 'is called a percentile and no percentile on the page reads so')); continue; }
+      if (n.unit === 'pct') { if (!(F.pct || new Set()).has(n.value)) { if ((F.percentile || new Set()).has(n.value)) flags.push(why('pct', 'is called a percentage; the page prints it as a percentile')); else if (!onPage.has(n.value) && !stated.has(n.value)) flags.push(why('pct', 'is a percentage the page does not print')); } continue; }
+      // a qualified number ("over 30 goals", "nearly 3000 minutes") is a writer's rounding, so it must BE round (a multiple of 5) and lie within the qualifier's window of a printed figure
+      if (onPage.has(n.value) || (qual && n.value % 5 === 0 && near(n.value, onPage, qual))) unbound.push({ raw: n.raw, clause: text.trim() });
+      else if (stated.has(n.value)) unbound.push({ raw: n.raw, clause: text.trim(), crossUnit: 'arithmetic' });   // "a gap of 27", 35 goals against 8 in the same sentence
+      else if ((ARITH.test(text) || /\bpoints?\b/i.test(text)) && ['points', 'per90', 'goals', 'assists', 'apps', 'minutes', 'shots', 'pct'].some(u => derived(F, u).has(n.value))) unbound.push({ raw: n.raw, clause: text.trim(), crossUnit: 'arithmetic' });   // "thirteen points above", "the gap in goals per 90 is 0.64": a difference of two printed figures of ONE kind, in a clause that says so; the union across kinds is not used (it let "a gap of 40" through, 2026-10-24)
+      else flags.push(why(null, 'is a number that appears nowhere on the page, nor is it a sum or difference of two figures stated in the sentence'));
     }
-  }
-  for (const n of nums) {
-    const why = (u, more) => ({ quote: n.clause, why: `"${n.raw}" ${more}`, kind: 2, check: 'numbers', unit: u });
-    const rescue = () => (n.bind === 'back' && onPage.has(n.value)) || (ARITH.test(n.clause) && n.stated.has(n.value));
-    if (NO_SOURCE[n.unit]) {
-      if (!(F[n.unit] && F[n.unit].has(n.value))) flags.push(why(n.unit, `is a number of ${NO_SOURCE[n.unit]}, which no page shows`));
-      continue;
-    }
-    /*  A COUNT OF DIMENSIONS MAY BE ANY NUMBER UP TO THE TOTAL THE PAGE PRINTS (Lucas, 2026-10-24): every card
-        prints the same five attributes, four dimensions and Reliability, and a reader can count any subset.
-        Tags and honours vary per card, so those counts stay exact (the page's total only). The asymmetry is
-        deliberate: a fixed visible set can be subset by eye; a variable one cannot be checked without the total.  */
-    if (n.unit === 'dimensions') {
-      const total = sides.reduce((t, s) => t + Object.keys(s.dims || {}).length, 0);
-      if (!(n.value >= 1 && n.value <= total)) flags.push(why('dimensions', `is a count of dimensions above the ${total} the page prints`));
-      continue;
-    }
-    if (n.unit && n.unit !== 'honours' && n.unit !== 'tags') {
-      /*  A PER-90 FIGURE THE PAGE PRINTS ANYWHERE PASSES (2026-10-25): the card prints key passes per 90 and the
-          comparison does not, so the request carries it for notes only; a reader of either page can still find the
-          decimal on the card. Rates are exact decimals, so the whole-page set is a safe check for them.  */
-      if ((n.unit === 'per90' || n.unit === 'passes90') && onPage.has(n.value)) { unbound.push({ raw: n.raw, clause: n.clause, crossUnit: n.unit }); continue; }
-      /*  A DECIMAL BOUND TO A COUNT WORD THAT EQUALS A PRINTED RATE IS THE RATE (pass 4: "that is 0.53 goals and 1.31 shots
-          on target", the per 90 elided altogether).  */
-      if (/^(goals|assists|shots)$/.test(n.unit) && !Number.isInteger(n.value) && (F.per90 || new Set()).has(n.value)) { unbound.push({ raw: n.raw, clause: n.clause, crossUnit: 'per90' }); continue; }
-      const set = derived(F, n.unit);
-      if (!set.size) { if (!rescue()) flags.push(why(n.unit, `is a figure of a kind (${n.unit}) no page shows for this pair`)); else unbound.push({ raw: n.raw, clause: n.clause, crossUnit: n.unit }); continue; }
-      const ok = set.has(n.value) || (n.qualifier ? near(n.value, set, n.qualifier) : (n.unit === 'shots' || n.unit === 'minutes') && near(n.value, set, null) && !Number.isInteger(n.value));
-      if (!ok) { if (rescue()) unbound.push({ raw: n.raw, clause: n.clause, crossUnit: n.unit }); else flags.push(why(n.unit, `matches no ${n.unit} figure on the page (${[...(F[n.unit] || [])].join(', ') || 'none'}), nor a sum or difference of two`)); }
-      continue;
-    }
-    if (n.unit === 'honours') { if (!derived(F, 'honours').has(n.value)) flags.push(why('honours', 'matches no honours count on the page')); continue; }
-    if (n.unit === 'tags') { if (!derived(F, 'tags').has(n.value)) flags.push(why('tags', `matches no tag count on the page (${[...(F.tags || [])].join(', ') || 'none'}), nor a sum or difference of two`)); continue; }
-    if (onPage.has(n.value) || (n.qualifier && near(n.value, onPage, n.qualifier))) unbound.push({ raw: n.raw, clause: n.clause });
-    else if (ARITH.test(n.clause) && n.stated.has(n.value)) unbound.push({ raw: n.raw, clause: n.clause, crossUnit: 'arithmetic' });   // "a gap of 27", 35 goals against 8 in the same sentence
-    else flags.push(why(null, 'is a number that appears nowhere on the page, nor is it a sum or difference of two figures stated in the sentence'));
   }
   return { flags, unbound };
 }

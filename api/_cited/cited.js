@@ -34,6 +34,7 @@
 const crypto = require('crypto');
 const V = require('../../vv-core.js');
 const PC = require('./prose_checks.js');
+const MN = require('./minimal_numbers.js');   // the minimal extractor (2026-10-28, c5)
 
 const WRITER_MODEL = 'claude-sonnet-4-6';   // the endpoint's writer
 const CHECK_MODEL = 'claude-sonnet-4-6';    // the narrow check (Lucas, 2026-10-24: Sonnet)
@@ -372,12 +373,16 @@ const KINDS = [['result', /^The page's own result/], ['honour', /^Honour this se
   ['keypasses', / key passes per 90 minutes$/], ['proof', / per 90 minutes$| not recorded this season /], ['conversion', /: goal conversion \d+%/],
   ['totals', / goals and \d+ assists in /], ['era', /before 2015/], ['identity', /, age \d+$/]];
 function factKind(text) { const k = KINDS.find(([, re]) => re.test(text)); return k ? k[0] : 'other'; }
+/*  THE MINIMAL EXTRACTOR REPLACES THE TOKENIZER'S BINDING HERE (2026-10-28, c5, Lucas: "the count decided it"; the count is in
+    area 9). A number carries a kind only by explicit adjacency or a bare elliptical count; everything else is membership. Sums
+    and differences are rounded to two decimals: "a difference of 1.60" from 3.24 and 1.64 (10-24) and "0.58" from 0.78 and
+    0.20 (pass 9) both died on floating point. The full tokenizer stays in prose_checks.js for the sample tools' page reading.  */
 function numbersOk(sentence, citedText, citedFacts, allFacts) {
-  const vals = new Set();
-  for (const x of PC.extractNumbers(citedText)) vals.add(x.value);
+  const r2 = x => Math.round(x * 100) / 100, vals = new Set();
+  for (const x of MN.minimalNumbers(citedText)) vals.add(x.value);   // number words in the facts' card copy ("Five seasons", "one more elite campaign")
   (String(citedText).replace(/(\d),(\d{3})/g, '$1$2').match(/\d+(?:\.\d+)?/g) || []).forEach(n => vals.add(+n));
   const base = [...vals];
-  for (const a of base) for (const b of base) { vals.add(Math.abs(a - b)); vals.add(a + b); }
+  for (const a of base) for (const b of base) { vals.add(r2(Math.abs(a - b))); vals.add(r2(a + b)); }
   /*  THE COUNT IS THE PAGE'S TOTAL, NOT THE CITED SUBSET (Lucas, 2026-10-24, after run 2). "Three tags to go
       with it" on a four-tag card shipped because the sentence cited three of the four; a reader counts
       four. So a count must equal a kind's total in the fact LIST for a side (what the page shows), or a sum
@@ -408,14 +413,15 @@ function numbersOk(sentence, citedText, citedFacts, allFacts) {
       A number the sentence calls a percentage must be a percentage in the cited facts (goal conversion, Reliability
       out of 100); one that exists only as a percentile is deleted.  */
   const pctIn = new Set(); for (const f of citedFacts || []) (String(f.text).match(/(\d+)%|Reliability: (\d+) out of 100/g) || []).forEach(m => pctIn.add(+m.replace(/\D/g, '')));
-  const pctWrong = PC.extractNumbers(sentence).filter(x => x.unit === 'pct' && !pctIn.has(x.value) && (citedFacts || []).some(f => new RegExp('\\b' + x.value + '(?:st|nd|rd|th) percentile').test(f.text))).map(x => x.raw + ' called a percentage, it is a percentile');
+  const nums = MN.minimalNumbers(sentence).filter(x => x.unit !== 'ordinal');   // "the 41st goal" is not a number to check
+  const pctWrong = nums.filter(x => x.unit === 'pct' && !pctIn.has(x.value) && (citedFacts || []).some(f => new RegExp('\\b' + x.value + '(?:st|nd|rd|th) percentile').test(f.text))).map(x => x.raw + ' called a percentage, it is a percentile');
   /*  A NUMBER CALLED A PERCENTILE MUST BE A PERCENTILE IN THE CITED FACTS, OR A DIFFERENCE OF TWO (2026-10-26, the meaning
       audit): Reliability is out of 100 and the page's caption already misdescribes it as a percentile (§D), so "Reliability
       at the 94th percentile" was one misreading away and no rule saw it.  */
   const pctileIn = new Set(); for (const f of citedFacts || []) (String(f.text).match(/(\d+)(?:st|nd|rd|th) percentile/g) || []).forEach(m => pctileIn.add(+m.replace(/\D/g, '')));
   const pctileOk = new Set(pctileIn); for (const a of pctileIn) for (const b of pctileIn) pctileOk.add(Math.abs(a - b));
-  const pctileWrong = PC.extractNumbers(sentence).filter(x => x.unit === 'percentile' && !pctileOk.has(x.value)).map(x => x.raw + ' called a percentile, and no cited fact prints it as one');
-  const bad = PC.extractNumbers(sentence).filter(x => x.unit === 'dimensions' ? !(x.value >= 1 && x.value <= dimTotal)
+  const pctileWrong = nums.filter(x => x.unit === 'percentile' && !pctileOk.has(x.value)).map(x => x.raw + ' called a percentile, and no cited fact prints it as one');
+  const bad = nums.filter(x => x.unit === 'percentile' ? false : x.unit === 'dimensions' ? !(x.value >= 1 && x.value <= dimTotal)
     : BOUND[x.unit] ? !(kindSet[BOUND[x.unit]] || new Set()).has(x.value) : !vals.has(x.value)).map(x => x.raw);
   return bad.concat(pctWrong, pctileWrong);
 }
@@ -719,6 +725,6 @@ async function runPiece(pack) {
     writer's instructions, the narrow check's and both formats are fingerprinted, so an edit to any of them
     stales every cached verdict and note. CITED_REV is bumped by hand for a change to a CODE rule (a drop rule,
     the share, the crown gate), which the fingerprint cannot see.  */
-const CITED_REV = 'c4';   // c4, 2026-10-28: the meaning audit's three residues closed (pools, dimension gloss, shelf year)   // c2, 2026-10-26: once-a-fact, quote-once, the ranking gate, the honour-repeat rule, two stanzas; c3, 2026-10-27: the 1 of "Ligue 1" is not a number
+const CITED_REV = 'c5';   // c4, 2026-10-28: the meaning audit's three residues closed (pools, dimension gloss, shelf year); c5, the same day: the minimal number extractor replaces the tokenizer's binding in numbersOk, sums rounded   // c2, 2026-10-26: once-a-fact, quote-once, the ranking gate, the honour-repeat rule, two stanzas; c3, 2026-10-27: the 1 of "Ligue 1" is not a number
 const RULES_VERSION = CITED_REV + '-' + crypto.createHash('sha256').update(WRITER_SYSTEM + NARROW_SYSTEM + VERDICT_FORMAT + NOTES_FORMAT + REJECT_SHARE).digest('hex').slice(0, 8);
 module.exports = { crossPoolOk, dimensionGlossOk, shelfYearOk, poolsOf, rankingOk, honourRepeatOk, stripCopy, cardAttributes, seasonYearOf, verdictFactsFrom, RULES_VERSION, CITED_REV, WRITER_SYSTEM, verdictFacts, notesFacts, scoreFact, reliabilityFact, nameRe, countsLine, identityFacts, VERDICT_FORMAT, NOTES_FORMAT, writerSystem, factsText, runPiece, judgeDraft, numbersOk, factKind, engagesBothSides, assemble, WRITER_MODEL, CHECK_MODEL, NARROW_SYSTEM };
