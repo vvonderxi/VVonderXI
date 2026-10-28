@@ -66,7 +66,11 @@ function honourFact(label, wonBy, shelfYear, ctx) {
     the honour fact (honourFact's shelfYear), and this fact is written only for a row from an earlier season.  */
 function cabinetFact(name, label, year, wonBy) {
   const who = LABEL_TO_TYPE[label] === 'world_cup_winner' ? 'won with his country' : wonBy === 'team' ? 'won with his team' : 'won by him';
-  return `${name}'s Cabinet, an earlier honour on the shelf: ${label}${year ? ' (' + year + ')' : ''}, ${who}; the shelf names no club, so it cannot be said which club it was won with`;
+  /*  THE SHELF YEAR IS A SEASON'S LABEL, NOT A CALENDAR YEAR (2026-10-28, the last of the meaning audit's residues): the shelf
+      prints the season's start year, so "won in 2012" reads as calendar 2012 to a reader who does not know that. The fact says
+      what the year is, and shelfYearOk below deletes a sentence that writes it as a date.  */
+  const when = year ? ` (dated ${year} on the shelf; the shelf's year is a season's label, not a calendar date, and the page prints only the year)` : '';
+  return `${name}'s Cabinet, an earlier honour on the shelf: ${label}${when}, ${who}; the shelf names no club, so it cannot be said which club it was won with`;
 }
 function seasonYearOf(season) { const m = String(season || '').match(/^(\d\d)\/\d\d$/); if (!m) return null; const y = +m[1]; return y < 50 ? 2000 + y : 1900 + y; }
 function ord(n) { n = +n; const t = n % 100, u = n % 10; return n + (t >= 11 && t <= 13 ? 'th' : u === 1 ? 'st' : u === 2 ? 'nd' : u === 3 ? 'rd' : 'th'); }
@@ -211,6 +215,8 @@ If too much of a piece is deleted, the whole piece is thrown away and the reader
 A SENTENCE THAT NAMES A CLUB, A LEAGUE OR AN AGE MUST CITE THAT PLAYER'S FIRST FACT (A1 or B1), which is where they are. A SENTENCE THAT SAYS "HONOUR" MUST CITE AN HONOUR FACT OR A CABINET FACT, AND ONE THAT SAYS "TAG" A TAG FACT: Peak, The Standard and the rest are tags, never honours. A CABINET FACT is what he had won BY this season, with its year; it is not this season's honour, so say "by this season" or "in his cabinet", and never write that a player holds no honour when his Cabinet facts hold one. THE WORD "CABINET" NAMES THAT BLOCK OF THE CARD AND NOTHING ELSE: never call this season's honours a cabinet, and on a comparison (which has no Cabinet facts) do not use the word at all.
 
 THE PROOF PANEL IS IN THE FACTS, as the page prints it: on a comparison, goals, assists and shots on target per 90 and goal conversion; on a card, the three rows of the player's position (a defender's tackles, interceptions and blocks). Quote them at the decimals given; "not recorded" means the page prints NR, and you may say so.
+
+A DIMENSION (Goal Threat, Creation, Progression, Defensive) IS A PERCENTILE THE CARD PRINTS AND NOTHING MORE. Never say what it measures or rewards, and never put a skill word beside it (finishing, tackling, passing, pressing, vision, work rate and the like): "Defensive at the 16th percentile" is the whole fact; "Defensive at the 16th, his tackling" is deleted. WHEN THE TWO PLAYERS' POOLS DIFFER (the facts say "among CAM seasons" and "among Winger seasons"), NEVER SET ONE MAN'S PERCENTILE BESIDE THE OTHER'S in one sentence: the page says each is measured against his own peers, not against each other, and a sentence citing a dimension of each is deleted. Write each player's dimensions in his own sentence. A SHELF YEAR IS A SEASON'S LABEL, NOT A DATE, AND THE PAGE PRINTS ONLY THE YEAR: write "dated 2012 on the shelf", never "in 2012", "won in 2012", "from 2012", and never as a season ("2012/13"), which the page does not print. The word "shelf" belongs to a Cabinet fact or an honour fact's own shelf entry; a comparison has no shelf.
 
 YOU MAY: restate a fact in your own words; compare cited facts ("the higher Creation", "eleven more goals"); give an opinion or judgement that rests only on cited facts ("the more complete season", citing the dimensions it compares); use the meaning the card itself gives an honour or tag, as quoted in the facts.
 
@@ -481,7 +487,7 @@ function rankingOk(pack, sentence, side) {
 const ORDINAL = { second: 1, third: 2, fourth: 3 };
 function honourRepeatOk(pack, sentence, citedFacts) {
   const why = [], t = stripCopy(sentence, pack);
-  const labels = [...new Set(pack.facts.map(f => (f.text.match(/^Honour this season: (.+?), won|'s Cabinet, an earlier honour on the shelf: (.+?)(?: \(\d{4}\))?, won/) || []).slice(1).find(Boolean)).filter(Boolean))];
+  const labels = [...new Set(pack.facts.map(f => (f.text.match(/^Honour this season: (.+?), won|'s Cabinet, an earlier honour on the shelf: (.+?)(?: \([^)]*\))?, won/) || []).slice(1).find(Boolean)).filter(Boolean))];   // the shelf year's parenthetical grew on 2026-10-28 (dated ... not the calendar year)
   const named = labels.filter(l => nameRe(l).test(t));
   /*  "The first honour reads: ..." is a listing, not a first (local run 2, 2026-10-26, Osimhen): the rule fires on "first"
       within two words before an honour's name, or "his first" or "a first" beside the name or the word honour.  */
@@ -496,6 +502,64 @@ function honourRepeatOk(pack, sentence, citedFacts) {
       const p = prior(l);
       if (p.length < need) why.push(`"${rep[1]}" ${l}: the shelf holds ${p.length} earlier`);
       else if (!p.some(f => citedFacts.some(c => c.id === f.id))) why.push(`"${rep[1]}" ${l} without citing the Cabinet fact that holds the earlier one`);
+    }
+  }
+  return why;
+}
+/* ---------- THE MEANING AUDIT'S THREE RESIDUES, CLOSED (2026-10-28, Lucas: "those are the Cabinet's family") ---------- */
+/*  (1) PERCENTILES ACROSS POOLS. The Compare page says it itself: "Each dimension is a percentile within that player's own
+    position pool, so the shapes measure each man against his peers rather than against each other." When the two pools
+    differ (a CAM against a Winger), one sentence may not cite a dimension fact from each side: a CAM's 94th set beside a
+    Winger's 96th is the comparison the page says it does not make. Same pool, nothing changes. Reliability is out of 100
+    and not a percentile, so it is not covered.  */
+function poolsOf(pack) {
+  const out = {};
+  for (const f of pack.facts) { const m = f.text.match(/percentile among (.+?) seasons$/); if (m && f.side && !out[f.side]) out[f.side] = m[1]; }
+  return out;
+}
+function crossPoolOk(pack, citedFacts) {
+  if (pack.type !== 'verdict') return [];
+  const pools = poolsOf(pack);
+  if (!pools.A || !pools.B || pools.A === pools.B) return [];
+  const dims = citedFacts.filter(f => factKind(f.text) === 'dimension');
+  if (dims.some(f => f.side === 'A') && dims.some(f => f.side === 'B')) return [`sets a ${pools.A} percentile beside a ${pools.B} percentile: the page says each dimension is a percentile within the player's own pool, not against each other`];
+  return [];
+}
+/*  (2) A DIMENSION NAME READ AS ONE STATISTIC. The card prints a dimension as a percentile and does not say what it measures;
+    "Defensive at the 16th percentile, his tackling" or "Goal Threat reflects his finishing" states a meaning no page prints.
+    In a clause that names a dimension, a skill word (finishing, tackling, passing, pressing and their kin) or a verb of
+    equivalence (measures, reflects, captures, rewards, driven by) is deleted. Card copy is stripped first. The figures the
+    card prints (goals, assists, shots, tackles on a defender's card) are not in the list: they are facts the number rule
+    checks, and a sentence may set them beside a dimension. "Strength" is not in it either: "a genuine strength" is the
+    ranking vocabulary rankingOk governs, not a physical attribute (the dry run over passes 6 to 9 caught it once).  */
+const DIM_NAMES = /\b(Goal Threat|Creation|Progression|Defensive)\b/i;
+const GLOSS = /\b(finish(?:ing|er)|tackl(?:ing|er)|pass(?:ing|er)|dribbl(?:ing|er)|press(?:ing|es)|defend(?:ing|er)|defen[cs]e|marking|heading|crossing|carrying|ball[- ]?winning|ball[- ]?carrying|work[- ]?rate|creativity|vision|shooting|scoring|playmaking|link[- ]?up|build[- ]?up|positioning|pace|stamina|distribution|aerial\w*|duel\w*|interception\w*|block(?:s|ing)|recover(?:y|ies))\b/i;
+const EQUATES = /\b(measur(?:es|ed|ing)|reflect(?:s|ed|ing)|captur(?:es|ed|ing)|reward(?:s|ed|ing)|count(?:s|ed|ing)|track(?:s|ed|ing)|driven by|built on|comes from|rooted in|rests on|means|is about|covers|rates|stems from|speaks to|points to|translates)\b/i;
+function dimensionGlossOk(pack, sentence) {
+  const why = [], t = stripCopy(sentence, pack);
+  for (const clause of t.split(/;|\b(?:and|while|but|whereas)\b/i)) {
+    const d = clause.match(DIM_NAMES); if (!d) continue;
+    const g = clause.match(GLOSS), e = clause.match(EQUATES);
+    if (g) why.push(`"${g[1]}" beside ${d[1]}: a dimension is a percentile the card prints, and what it measures is not on the card`);
+    else if (e) why.push(`"${e[1]}" beside ${d[1]}: a dimension is a percentile the card prints, and what it measures or rests on is not on the card`);
+  }
+  return why;
+}
+/*  (3) THE SHELF YEAR AS A CALENDAR YEAR. A year the shelf prints may appear only bound to the shelf ("dated 2012 on the
+    shelf", "the shelf's 2012 row"): "in 2012", "won in 2012", "from 2012", "back in 2012" read as a date and are deleted,
+    and "the 2012/13 season" prints a season the page does not (the local proof wrote it and the judge, rightly, flagged
+    it: the page prints "2012" and says nothing of what it labels). The years come from the Cabinet facts and from an
+    honour fact's own shelf entry. What the shelf's year means is for the page to say (§D, a caption), not the writer.  */
+function shelfYearOk(pack, sentence) {
+  const why = [], years = new Set();
+  for (const f of pack.facts) { const m = f.text.match(/dated (\d{4}) on the shelf|, dated (\d{4}), not an earlier one/); if (m) years.add(m[1] || m[2]); }
+  for (const y of years) {
+    const re = new RegExp('(?<![\\d/])' + y + '(?![\\d])', 'g'); let m;
+    while ((m = re.exec(sentence))) {
+      const after = sentence.slice(m.index + 4, m.index + 8), before = sentence.slice(Math.max(0, m.index - 40), m.index);
+      if (/^\/\d\d/.test(after)) { why.push(`"${y}${after.slice(0, 3)}" writes the shelf year as a season the page does not print: the shelf prints ${y} and nothing more`); continue; }   // the local proof of 2026-10-28 wrote "covering the 2012/13 season" and the judge was right that no page prints it
+      if (/\b(dated|shelf|shelf's|row|entry|cabinet|cabinet's)\b[^.;]{0,24}$/i.test(before) || /^\S*\s+(row|entry|shelf)\b/.test(sentence.slice(m.index + 4, m.index + 16))) continue;
+      why.push(`"${before.slice(-12).trim()} ${y}" reads the shelf year as a date: the shelf prints ${y} as a season's label; write it dated on the shelf`);
     }
   }
   return why;
@@ -545,7 +609,15 @@ async function judgeDraft(pack, draft, narrow = narrowCheck) {
         different block). The word may name only a Cabinet fact; a comparison has none, so there it is deleted.  */
     if (/\bcabinets?\b/i.test(u.s) && !kinds.has('cabinet') && !citedFacts.some(f => /on the Cabinet shelf/.test(f.text))) why.push('says cabinet without citing a Cabinet fact');   // an honour fact that names this season's own shelf entry counts (2026-10-26)
     if (/\btags?\b/i.test(u.s) && !kinds.has('tag')) why.push('says tag without citing a tag fact');
+    /*  "SHELF" NAMES THE CABINET SHELF AND NOTHING ELSE (2026-10-28, the local proof of the shelf-year rule: told to write "dated
+        2012 on the shelf", the writer put "Benzema's card, dated 2021/22 on the shelf" in a comparison, which has no shelf).  */
+    if (/\bshel(?:f|ves)\b/i.test(u.s) && !citedFacts.some(f => /on the shelf/.test(f.text))) why.push('says shelf without citing a fact that holds a shelf entry');
     if (pack.type === 'notes') { rankingOk(pack, u.s).forEach(w => why.push('ranking: ' + w)); honourRepeatOk(pack, u.s, citedFacts).forEach(w => why.push('honour: ' + w)); }
+    /*  THE MEANING AUDIT'S THREE RESIDUES (2026-10-28): a percentile set against another pool's, a dimension glossed as a
+        statistic, a shelf year written as a date. All three run on cards and comparisons alike.  */
+    crossPoolOk(pack, citedFacts).forEach(w => why.push('pools: ' + w));
+    dimensionGlossOk(pack, u.s).forEach(w => why.push('dimension: ' + w));
+    shelfYearOk(pack, u.s).forEach(w => why.push('shelf year: ' + w));
     /*  THE GATE ON A COMPARISON'S OWN-PLAYER PARAGRAPHS (pass 6, 2026-10-26): told the card's ranking rule, the writer ranked
         inside verdicts too, and wrongly ("Progression at the 95th percentile is his strongest dimension" beside a Goal
         Threat at the 97th) in both pieces sample 1 lost. The narrow check caught them; the code now does, against that
@@ -647,6 +719,6 @@ async function runPiece(pack) {
     writer's instructions, the narrow check's and both formats are fingerprinted, so an edit to any of them
     stales every cached verdict and note. CITED_REV is bumped by hand for a change to a CODE rule (a drop rule,
     the share, the crown gate), which the fingerprint cannot see.  */
-const CITED_REV = 'c3';   // c2, 2026-10-26: once-a-fact, quote-once, the ranking gate, the honour-repeat rule, two stanzas; c3, 2026-10-27: the 1 of "Ligue 1" is not a number
+const CITED_REV = 'c4';   // c4, 2026-10-28: the meaning audit's three residues closed (pools, dimension gloss, shelf year)   // c2, 2026-10-26: once-a-fact, quote-once, the ranking gate, the honour-repeat rule, two stanzas; c3, 2026-10-27: the 1 of "Ligue 1" is not a number
 const RULES_VERSION = CITED_REV + '-' + crypto.createHash('sha256').update(WRITER_SYSTEM + NARROW_SYSTEM + VERDICT_FORMAT + NOTES_FORMAT + REJECT_SHARE).digest('hex').slice(0, 8);
-module.exports = { rankingOk, honourRepeatOk, stripCopy, cardAttributes, seasonYearOf, verdictFactsFrom, RULES_VERSION, CITED_REV, WRITER_SYSTEM, verdictFacts, notesFacts, scoreFact, reliabilityFact, nameRe, countsLine, identityFacts, VERDICT_FORMAT, NOTES_FORMAT, writerSystem, factsText, runPiece, judgeDraft, numbersOk, factKind, engagesBothSides, assemble, WRITER_MODEL, CHECK_MODEL, NARROW_SYSTEM };
+module.exports = { crossPoolOk, dimensionGlossOk, shelfYearOk, poolsOf, rankingOk, honourRepeatOk, stripCopy, cardAttributes, seasonYearOf, verdictFactsFrom, RULES_VERSION, CITED_REV, WRITER_SYSTEM, verdictFacts, notesFacts, scoreFact, reliabilityFact, nameRe, countsLine, identityFacts, VERDICT_FORMAT, NOTES_FORMAT, writerSystem, factsText, runPiece, judgeDraft, numbersOk, factKind, engagesBothSides, assemble, WRITER_MODEL, CHECK_MODEL, NARROW_SYSTEM };
