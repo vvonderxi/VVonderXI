@@ -136,7 +136,7 @@ function sideFacts(line, P) {
     const row = (k, label) => { const x = v(k); if (x && x !== 'NR') F.push(`${surname}: ${x} ${label} per 90 minutes`); else if (x === 'NR') F.push(`${surname}: ${label} per 90 not recorded this season (the page prints NR)`); };
     row('goals', 'goals'); row('assists', 'assists'); row('shots on target', 'shots on target');
     const cv = g(/goal conversion (NR|\d+%)/);
-    if (cv && cv !== 'NR') F.push(`${surname}: goal conversion ${cv}, goals as a share of shots`);
+    if (cv && cv !== 'NR') F.push(`${surname}: goal conversion ${cv}`);   // no gloss: no page says what conversion is (Lucas, 2026-10-28, the Reliability call of the 24th again)
   }
   const T = g(/TAG MEANINGS: (.*?); \d+ min/) || '';
   for (const t of (T ? T.split(' | ') : [])) { const i = t.indexOf(' = '); if (i > 0) F.push(tagFact(t.slice(0, i), t.slice(i + 3))); }
@@ -725,6 +725,6 @@ async function runPiece(pack) {
     writer's instructions, the narrow check's and both formats are fingerprinted, so an edit to any of them
     stales every cached verdict and note. CITED_REV is bumped by hand for a change to a CODE rule (a drop rule,
     the share, the crown gate), which the fingerprint cannot see.  */
-const CITED_REV = 'c5';   // c4, 2026-10-28: the meaning audit's three residues closed (pools, dimension gloss, shelf year); c5, the same day: the minimal number extractor replaces the tokenizer's binding in numbersOk, sums rounded   // c2, 2026-10-26: once-a-fact, quote-once, the ranking gate, the honour-repeat rule, two stanzas; c3, 2026-10-27: the 1 of "Ligue 1" is not a number
+const CITED_REV = 'c6';   // c6, 2026-10-28 evening: the conversion gloss struck from the Proof fact (no page prints it); c4, 2026-10-28: the meaning audit's three residues closed (pools, dimension gloss, shelf year); c5, the same day: the minimal number extractor replaces the tokenizer's binding in numbersOk, sums rounded   // c2, 2026-10-26: once-a-fact, quote-once, the ranking gate, the honour-repeat rule, two stanzas; c3, 2026-10-27: the 1 of "Ligue 1" is not a number
 const RULES_VERSION = CITED_REV + '-' + crypto.createHash('sha256').update(WRITER_SYSTEM + NARROW_SYSTEM + VERDICT_FORMAT + NOTES_FORMAT + REJECT_SHARE).digest('hex').slice(0, 8);
 module.exports = { crossPoolOk, dimensionGlossOk, shelfYearOk, poolsOf, rankingOk, honourRepeatOk, stripCopy, cardAttributes, seasonYearOf, verdictFactsFrom, RULES_VERSION, CITED_REV, WRITER_SYSTEM, verdictFacts, notesFacts, scoreFact, reliabilityFact, nameRe, countsLine, identityFacts, VERDICT_FORMAT, NOTES_FORMAT, writerSystem, factsText, runPiece, judgeDraft, numbersOk, factKind, engagesBothSides, assemble, WRITER_MODEL, CHECK_MODEL, NARROW_SYSTEM };
