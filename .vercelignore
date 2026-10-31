@@ -90,6 +90,11 @@
 # Kept because the platform reads it from the deployment: it carries the
 # headers block and `fluid`, and excluding it silently drops both.
 !/vercel.json
+# THE GIT DIRECTORY STAYS IN THE BUILD CONTEXT, 2026-10-31: the ignored-build step in vercel.json runs
+# `git diff` between the previous deployed commit and HEAD, and this allowlist had emptied `.git` before
+# it ran ("not a git repository"), so every docs-only commit built. The repo is public on GitHub, so the
+# directory holds nothing secret; the platform does not serve it (checked on the preview the day this landed).
+!/.git
 # THE DEPENDENCY MANIFEST HAS TO SHIP OR THE FUNCTION DOES NOT , 2026-10-08. Without these two
 # Vercel has nothing to install, so api/analyse.js dies on `require('@supabase/supabase-js')`.
 # Previews hid it for five days by restoring an old build cache that still held node_modules;

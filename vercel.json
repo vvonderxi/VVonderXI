@@ -1,5 +1,5 @@
 {
-  "ignoreCommand": "echo \"prev=$VERCEL_GIT_PREVIOUS_SHA head=$VERCEL_GIT_COMMIT_SHA\"; ls -ad .git 2>&1; git rev-parse --is-shallow-repository 2>&1; git log --oneline -3 2>&1 | cat; git cat-file -e \"$VERCEL_GIT_PREVIOUS_SHA^{commit}\" 2>&1; echo \"catfile=$?\"; exit 1",
+  "ignoreCommand": "if git cat-file -e \"$VERCEL_GIT_PREVIOUS_SHA^{commit}\" 2>/dev/null; then git diff --quiet \"$VERCEL_GIT_PREVIOUS_SHA\" HEAD -- . ':(exclude)docs' ':(exclude)*.md'; else exit 1; fi",
   "cleanUrls": true,
   "fluid": true,
   "functions": {
