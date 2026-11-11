@@ -485,16 +485,16 @@
           with both cards loaded and &go=1, which Compare honours for its three suggested pairs only,
           so one tap runs the comparison (owner's decision 2026-10-10). [Since 2026-10-19 the button reads
           "See the full comparison": prose is off, so there is no written verdict to promise.]
-          [FROM 2026-11-11 the fallback pair is Messi 19/20 v Candreva 21/22 and the button reads "See the
-          verdict" again: all prose has been live since 2026-10-26 and every pair in the rotation is a
-          separated pair with a cached, crowned verdict (the PAIRS note below).]  -->
+          [FROM 2026-11-11 the button reads "See the verdict" again: all prose has been live since
+          2026-10-26. The fallback pair is Messi 15/16 v Ronaldo 15/16, the first of the six inside-margin
+          pairs in the rotation (the PAIRS note below); the same morning's sample-2 rotation lasted hours.]  -->
     <section class="argue" aria-label="Who had the better season?">
       <p class="adef">Every season in nine leagues since 2010/11, <b>scored out of 100</b>.</p>
       <p class="aq">Who had the better season?</p>
-      <a class="acards" href="compare.html?a=139650&amp;b=145855&amp;go=1" data-pair="139650-145855" aria-label="Who had the better season?">
+      <a class="acards" href="compare.html?a=141402&amp;b=141579&amp;go=1" data-pair="141402-141579" aria-label="Who had the better season?">
         <span class="aslot" id="argA"></span><span class="avs">VS</span><span class="aslot" id="argB"></span>
       </a>
-      <a class="acta" href="compare.html?a=139650&amp;b=145855&amp;go=1" data-pair="139650-145855">See the verdict</a>
+      <a class="acta" href="compare.html?a=141402&amp;b=141579&amp;go=1" data-pair="141402-141579">See the verdict</a>
     </section>
     <div class="searchwrap">
       <div class="search">
@@ -741,8 +741,26 @@
         through the live page before this went up). The 10-19 "mix" rule (ties and separated pairs
         together) is superseded: with prose live, a separated pair's verdict names a winner and reads
         better than a tie. Reserves, warm and listed in compare, not in the rotation: Kane 16/17 v
-        Mertens 20/21 [134288, 146568], Ibrahimovic 15/16 v Lacazette 24/25 [161191, 157469].]  */
-    var PAIRS = [[139650, 145855], [141579, 153064], [131969, 159395], [141117, 158702]];
+        Mertens 20/21 [134288, 146568], Ibrahimovic 15/16 v Lacazette 24/25 [161191, 157469].]
+        [REPLACED THE SAME DAY, 2026-11-11, owner's decision: "Messi v Candreva exists because Candreva
+        scores 79, not because anyone wants to read it." SIX PAIRS A FOOTBALL FAN WOULD CLICK: both names
+        known, the same position pool, scores inside the Index's margin, so the page prints "The Index
+        cannot separate these two." (or the tie line) and the verdict argues the record without crowning.
+        Lucas: "The engine refusing to pick is the point." The 10-19 "mix" rule and the morning's
+        "separated reads better" rule are both superseded by this. Gap against margin (vv-margin.js):
+          Messi 15/16 v Ronaldo 15/16          [141402, 141579]  93 v 94, gap 1 against 3.88, Winger
+          Salah 17/18 v Kane 17/18             [133614, 133870]  94 v 92, gap 2 against 4.47, both stored ST
+          Haaland 22/23 v Kane 23/24           [131585, 151977]  95 v 92, gap 3 against 4.17, ST
+          Lewandowski 20/21 v Suarez 15/16     [152972, 141575]  92 v 95, gap 3 against 4.04, ST
+          Palmer 23/24 v Foden 23/24           [131220, 131183]  91 v 90, gap 1 against 5.27, Winger
+          Vardy 15/16 v Kane 15/16             [134725, 134697]  90 v 90, an exact tie, ST
+        Each was generated once through the live function (scripts/calibration/homepage_sample.json,
+        the run in _local/verdict-check/homepage_sample_endpoint_*), read in full before it went up, and
+        is warm in verdict_cache at the live version. Two first drafts were deleted and regenerated for
+        a false absence claim about the other card's tags (Messi v Ronaldo, Palmer v Foden). The old
+        HELD_PAIRS rule no longer applies: the endpoint's held list was emptied the same day. The sample-2
+        four stay in compare's AUTO_VERDICT_PAIRS for old links only.]  */
+    var PAIRS = [[141402, 141579], [133614, 133870], [131585, 151977], [152972, 141575], [131220, 131183], [134725, 134697]];
     var P = PAIRS[Math.floor(Math.random() * PAIRS.length)];
     if(!P){ box.style.display = 'none'; return; }  /* zero pairs: the search box is the front door */
     var url = 'compare.html?a=' + P[0] + '&b=' + P[1] + '&go=1', key = Math.min(P[0],P[1]) + '-' + Math.max(P[0],P[1]);

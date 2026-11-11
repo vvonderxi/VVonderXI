@@ -2499,8 +2499,9 @@ body.light .pkmsub{color:var(--ink-soft)}
                             '131585-135556', '151977-152972', '130728-158399',
                             '131183-137957', '131129-131220',   /* Bellingham v Foden, Palmer v Saka (23/24), homepage from 2026-10-17 */
                             '130728-157393', '131585-164395',    /* Salah v Dembele 24/25, Haaland 22/23 v Gyokeres 23/24, homepage from 2026-10-19 */
-                            '139650-145855', '141579-153064', '131969-159395', '141117-158702',   /* the rotation from 2026-11-11: Messi v Candreva, Ronaldo v Sancho, Salah v Neymar, Suarez v Payet (index.html PAIRS) */
-                            '134288-146568', '157469-161191'];   /* its two reserves, Kane v Mertens, Ibrahimovic v Lacazette, warm but not rotating */
+                            '139650-145855', '141579-153064', '131969-159395', '141117-158702',   /* the sample-2 rotation of 2026-11-11 (hours), kept for old links */
+                            '134288-146568', '157469-161191',    /* its two reserves, Kane v Mertens, Ibrahimovic v Lacazette, warm but not rotating */
+                            '141402-141579', '133614-133870', '131585-151977', '141575-152972', '131183-131220', '134697-134725'];   /* THE ROTATION FROM 2026-11-11 (index.html PAIRS): Messi v Ronaldo 15/16, Salah v Kane 17/18, Haaland 22/23 v Kane 23/24, Lewandowski 20/21 v Suarez 15/16, Palmer v Foden 23/24, Vardy v Kane 15/16; six inside-margin pairs, each generated and read before it went up */
   function vvAutoVerdict(){
     if(!/[?&]go=1(&|$)/.test(location.search) || !CMP_A || !CMP_B) return;
     var a = +(CMP_A.id || CMP_A.card_id), b = +(CMP_B.id || CMP_B.card_id);

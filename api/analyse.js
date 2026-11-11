@@ -312,18 +312,26 @@ async function rlEnd(id) {
 /*  THE CHECKING PASS OF 2026-10-12 (a second model reading each verdict against its evidence, VV_VERDICT_CHECK)
     IS GONE WITH THE OLD WRITER (2026-10-25). It caught kind 1 only and was never switched on; the cited writer
     makes the reading unnecessary, because a sentence that cites nothing never reaches a reader.  */
-const HELD_PAIRS = new Set([
-  '141999-143372',  // Messi 11/12 v Ronaldo 14/15       Compare suggestion
-  '131585-152972',  // Haaland 22/23 v Lewandowski 20/21 Compare suggestion
-  '133095-141575',  // De Bruyne 19/20 v Suarez 15/16    Compare suggestion
-  '131585-135556',  // Haaland 22/23 v Suarez 13/14      retired homepage pair, old links
-  '151977-152972',  // Kane 23/24 v Lewandowski 20/21    homepage pair (back from 2026-10-19, no prose)
-  '130728-158399',  // Salah 24/25 v Mbappe 21/22        retired homepage pair
-  '131183-137957',  // Foden 23/24 v Bellingham 23/24    homepage pair (back from 2026-10-19, no prose)
-  '131129-131220',  // Saka 23/24 v Palmer 23/24         retired homepage pair
-  '130728-157393',  // Salah 24/25 v Dembele 24/25       homepage pair from 2026-10-19
-  '131585-164395',  // Haaland 22/23 v Gyokeres 23/24    homepage pair from 2026-10-19
-]);
+/*  RELEASED 2026-11-11, LUCAS'S DECISION ("they are old-writer rows at v3 and stale by construction"). The ten
+    keys held here since 2026-10-17 and 2026-10-19 were the pairs the site linked while the OLD writer served:
+    eight read against their cards and failed, two went on the homepage with prose off. The old writer left this
+    file on 2026-10-25; every one of the ten cache rows is a v3 version the cited writer treats as stale, so the
+    next view of each regenerates on the live rules like any other pair. The ten, for the record (regenerated
+    verdicts to read first, by Lucas's note: THREE CROSS-POOL pairs, marked *, which the c4 pool rule handles by
+    refusing cross-pool dimension claims, and TWO pairs carrying PRE-2015 cards, marked +, thin stat records):
+      141999-143372  Messi 11/12 (ST) v Ronaldo 14/15 (Winger)   * +    Compare suggestion
+      131585-152972  Haaland 22/23 v Lewandowski 20/21                   Compare suggestion
+      133095-141575  De Bruyne 19/20 (CAM) v Suarez 15/16 (ST)   *      Compare suggestion
+      131585-135556  Haaland 22/23 v Suarez 13/14                  +    retired homepage pair
+      151977-152972  Kane 23/24 v Lewandowski 20/21                      homepage pair, 2026-10-19
+      130728-158399  Salah 24/25 v Mbappe 21/22                          retired homepage pair
+      131183-137957  Foden 23/24 (Winger) v Bellingham 23/24 (CAM) *     homepage pair, 2026-10-19
+      131129-131220  Saka 23/24 v Palmer 23/24                           retired homepage pair
+      130728-157393  Salah 24/25 v Dembele 24/25                         homepage pair, 2026-10-19
+      131585-164395  Haaland 22/23 v Gyokeres 23/24                      homepage pair, 2026-10-19
+    The set stays so a pair can be held again without touching the handler: add its key here and deploy.
+    scripts/prose_hold.js holds one pair's cached row without a deploy.  */
+const HELD_PAIRS = new Set([]);
 /*  checkVerdictSupport, CHECK_MODEL, CHECK_SYSTEM, notesUserMessage and verdictProse left with the old writer
     (2026-10-25): the cited writer's drop rule and narrow check are what guard the endpoint.  */
 

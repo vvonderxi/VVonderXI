@@ -1,0 +1,11 @@
+{
+ "what": "The homepage rotation of 2026-11-11 (Lucas: six pairs from list A, famous names in the same position pool whose scores sit inside the Index's margin, so the page prints 'The Index cannot separate these two.' or the tie line and the verdict argues without crowning: 'The engine refusing to pick is the point.'). Each is generated once through the live function and read before it goes on the page; the rows then serve from verdict_cache. Order inside each pair is the order the homepage shows them.",
+ "items": [
+  { "id": "messi1516-ronaldo1516",    "type": "verdict", "cards": [141402, 141579], "note": "Messi 15/16 v Ronaldo 15/16, Winger; 93 v 94, gap 1 against a margin of 3.88: inside, the page should not crown" },
+  { "id": "salah1718-kane1718",       "type": "verdict", "cards": [133614, 133870], "note": "Salah 17/18 v Kane 17/18, both stored ST; 94 v 92, gap 2 against 4.47: inside" },
+  { "id": "haaland2223-kane2324",     "type": "verdict", "cards": [131585, 151977], "note": "Haaland 22/23 v Kane 23/24, ST; 95 v 92, gap 3 against 4.17: inside" },
+  { "id": "lewandowski2021-suarez1516","type": "verdict", "cards": [152972, 141575], "note": "Lewandowski 20/21 v Suarez 15/16, ST; 92 v 95, gap 3 against 4.04: inside" },
+  { "id": "palmer2324-foden2324",     "type": "verdict", "cards": [131220, 131183], "note": "Palmer 23/24 v Foden 23/24, Winger; 91 v 90, gap 1 against 5.27: inside" },
+  { "id": "vardy1516-kane1516",       "type": "verdict", "cards": [134725, 134697], "note": "Vardy 15/16 v Kane 15/16, ST; 90 v 90, an exact tie: 'Level on the Index. It will not separate them.'" }
+ ]
+}
