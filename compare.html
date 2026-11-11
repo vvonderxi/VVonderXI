@@ -2498,7 +2498,9 @@ body.light .pkmsub{color:var(--ink-soft)}
   var AUTO_VERDICT_PAIRS = ['141999-143372', '131585-152972', '133095-141575',
                             '131585-135556', '151977-152972', '130728-158399',
                             '131183-137957', '131129-131220',   /* Bellingham v Foden, Palmer v Saka (23/24), homepage from 2026-10-17 */
-                            '130728-157393', '131585-164395'];   /* Salah v Dembele 24/25, Haaland 22/23 v Gyokeres 23/24, homepage from 2026-10-19 */
+                            '130728-157393', '131585-164395',    /* Salah v Dembele 24/25, Haaland 22/23 v Gyokeres 23/24, homepage from 2026-10-19 */
+                            '139650-145855', '141579-153064', '131969-159395', '141117-158702',   /* the rotation from 2026-11-11: Messi v Candreva, Ronaldo v Sancho, Salah v Neymar, Suarez v Payet (index.html PAIRS) */
+                            '134288-146568', '157469-161191'];   /* its two reserves, Kane v Mertens, Ibrahimovic v Lacazette, warm but not rotating */
   function vvAutoVerdict(){
     if(!/[?&]go=1(&|$)/.test(location.search) || !CMP_A || !CMP_B) return;
     var a = +(CMP_A.id || CMP_A.card_id), b = +(CMP_B.id || CMP_B.card_id);

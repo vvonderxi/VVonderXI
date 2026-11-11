@@ -484,14 +484,17 @@
           Kane 23/24, the only pair left in the homepage rotation, and it must be warmed like the rest.] The link goes to Compare
           with both cards loaded and &go=1, which Compare honours for its three suggested pairs only,
           so one tap runs the comparison (owner's decision 2026-10-10). [Since 2026-10-19 the button reads
-          "See the full comparison": prose is off, so there is no written verdict to promise.]  -->
-    <section class="argue" aria-label="Who had the better season?" style="display:none">
+          "See the full comparison": prose is off, so there is no written verdict to promise.]
+          [FROM 2026-11-11 the fallback pair is Messi 19/20 v Candreva 21/22 and the button reads "See the
+          verdict" again: all prose has been live since 2026-10-26 and every pair in the rotation is a
+          separated pair with a cached, crowned verdict (the PAIRS note below).]  -->
+    <section class="argue" aria-label="Who had the better season?">
       <p class="adef">Every season in nine leagues since 2010/11, <b>scored out of 100</b>.</p>
       <p class="aq">Who had the better season?</p>
-      <a class="acards" href="compare.html?a=152972&amp;b=151977&amp;go=1" data-pair="151977-152972" aria-label="Who had the better season?">
+      <a class="acards" href="compare.html?a=139650&amp;b=145855&amp;go=1" data-pair="139650-145855" aria-label="Who had the better season?">
         <span class="aslot" id="argA"></span><span class="avs">VS</span><span class="aslot" id="argB"></span>
       </a>
-      <a class="acta" href="compare.html?a=152972&amp;b=151977&amp;go=1" data-pair="151977-152972">See the full comparison</a>
+      <a class="acta" href="compare.html?a=139650&amp;b=145855&amp;go=1" data-pair="139650-145855">See the verdict</a>
     </section>
     <div class="searchwrap">
       <div class="search">
@@ -721,8 +724,25 @@
         [OFF AGAIN, 2026-10-23, owner's decision: back to the 10-17 state, the search box and the
         buttons beneath it. PAIRS empty AND display:none on .argue in the markup. The four pairs
         stay in compare's AUTO_VERDICT_PAIRS and the endpoint's HELD_PAIRS for old links. TO
-        RESTORE: add pairs here AND remove the inline display:none on .argue.]  */
-    var PAIRS = [];
+        RESTORE: add pairs here AND remove the inline display:none on .argue.]
+        [BACK ON, 2026-11-11, owner's decision ("prose has been live since 26 October so that reason
+        is gone"). FOUR SEPARATED PAIRS, EACH WITH A CACHED VERDICT THAT CROWNS THE FIRST CARD, taken
+        from sample 2 (scripts/calibration/fresh_sample2.json): the six pairs the Index separates at
+        known names, every one 18 of 18 across passes 12 and 13 on the c6 rules the live site serves,
+        and every card with the full stat record (shots, key passes, dribbles, tackles all present):
+          Messi 19/20 v Candreva 21/22   [139650, 145855]  94 v 79
+          Ronaldo 15/16 v Sancho 20/21   [141579, 153064]  94 v 78
+          Salah 21/22 v Neymar 19/20     [131969, 159395]  92 v 81
+          Suarez 16/17 v Payet 21/22     [141117, 158702]  93 v 81
+        NONE OF THE OLD FIVE RETURNS: every pair the homepage ever carried is on the endpoint's
+        HELD_PAIRS, and a held pair shows the held notice, the dead end visitors hit in late October.
+        A homepage pair must therefore NOT be on HELD_PAIRS; it must be in compare's AUTO_VERDICT_PAIRS
+        (it is, with the two reserves) and warm in verdict_cache at the live cache version (checked
+        through the live page before this went up). The 10-19 "mix" rule (ties and separated pairs
+        together) is superseded: with prose live, a separated pair's verdict names a winner and reads
+        better than a tie. Reserves, warm and listed in compare, not in the rotation: Kane 16/17 v
+        Mertens 20/21 [134288, 146568], Ibrahimovic 15/16 v Lacazette 24/25 [161191, 157469].]  */
+    var PAIRS = [[139650, 145855], [141579, 153064], [131969, 159395], [141117, 158702]];
     var P = PAIRS[Math.floor(Math.random() * PAIRS.length)];
     if(!P){ box.style.display = 'none'; return; }  /* zero pairs: the search box is the front door */
     var url = 'compare.html?a=' + P[0] + '&b=' + P[1] + '&go=1', key = Math.min(P[0],P[1]) + '-' + Math.max(P[0],P[1]);
