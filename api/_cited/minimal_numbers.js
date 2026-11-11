@@ -45,10 +45,22 @@ function minimalNumbers(text) {
       // number's own noun: "35 goals", "seven assists more"), after a possessive or a joining word, in a clause that already
       // counted that kind. A tag or honour total never exceeds twelve; "Neymar's 87" is a score.
       const NOUN = /^(goals?|assists?|shots?|minutes?|appearances?|apps|games?|matches|starts?|honours?|tags?|dimensions?|attributes?|percentiles?|points?|years?|per|key|passes|tackles?|interceptions?|blocks?|seasons?|clubs?|campaigns?|titles?|medals?|awards?|trophies|caps?|wins?|clean|saves?|times)$/;
-      const bare = !NOUN.test(a1) && (!a1 || /^[.,;:!?()"]$/.test(a1) || /^(to|against|and|or|than|in|on|of|this|that|where|while|yet|but|more|fewer)$/.test(a1) || /'s$/.test(b1));   // "Salah's four speak to", "Mbappé's four also include"
-      if (bare && v <= 12 && (/'s$/.test(b1) || /^(to|against|and|versus|with|holds|carries|those|these)$/.test(b1))) {
+      const bare = !NOUN.test(a1) && (!a1 || /^[.,;:!?()"]$/.test(a1) || /^(to|against|and|or|than|in|on|of|this|that|where|while|yet|but|more|fewer)$/.test(a1) || /'s$|^(?:his|her|its|their)$/.test(b1));   // "Salah's four speak to", "Mbappé's four also include", "among its four" (2026-11-11)
+      /*  THE ELLIPSIS AFTER A POSSESSIVE PRONOUN, AND A KIND NAMED WITHOUT A COUNT (2026-11-11, c7; the tools' shape carried
+          from passes 10 and 11, "Salah's seven" after "among their tags", and "among its four" after "a tag" on 2026-11-11).
+          "its", "his", "her" and "their" are possessives too; and when the clause counted nothing, a kind word named with a
+          determiner ("their tags", "a tag") binds the bare count. The nearest counted noun still decides first: "6 assists
+          against Kane's 1" binds to assists (so to nothing) and never to an honour named earlier in the clause.  */
+      const POSS = /'s$|^(?:his|her|its|their)$/;
+      if (bare && v <= 12 && (POSS.test(b1) || /^(to|against|and|versus|with|holds|carries|those|these)$/.test(b1))) {
         let a = k; while (a > 0 && !/^[.;:]$/.test(toks[a - 1].s)) a--;
-        for (let q = k - 1; q >= a; q--) { const kw = kindWord(toks[q].lw); if (kw && q > 0 && (/^\d+$/.test(toks[q - 1].s) || W[toks[q - 1].lw] != null)) { unit = kw; break; } }
+        let counted = null, named = null;
+        for (let q = k - 1; q >= a; q--) {
+          const isNum = q > 0 && (/^\d+$/.test(toks[q - 1].s) || W[toks[q - 1].lw] != null);
+          if (isNum && NOUN.test(toks[q].lw) && counted == null) counted = kindWord(toks[q].lw) || 'other';
+          else if (!isNum && kindWord(toks[q].lw) && named == null && q > 0 && /^(?:his|her|its|their|the|a|an|those|these|both|all|of|among|in)$/.test(toks[q - 1].lw)) named = kindWord(toks[q].lw);
+        }
+        if (counted && counted !== 'other') unit = counted; else if (!counted && named) unit = named;
       }
     }
     out.push({ value: v, raw: t.slice(tk.i, toks[j].end), unit });

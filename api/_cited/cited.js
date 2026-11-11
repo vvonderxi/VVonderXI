@@ -215,15 +215,17 @@ If too much of a piece is deleted, the whole piece is thrown away and the reader
 
 A SENTENCE THAT NAMES A CLUB, A LEAGUE OR AN AGE MUST CITE THAT PLAYER'S FIRST FACT (A1 or B1), which is where they are. A SENTENCE THAT SAYS "HONOUR" MUST CITE AN HONOUR FACT OR A CABINET FACT, AND ONE THAT SAYS "TAG" A TAG FACT: Peak, The Standard and the rest are tags, never honours. A CABINET FACT is what he had won BY this season, with its year; it is not this season's honour, so say "by this season" or "in his cabinet", and never write that a player holds no honour when his Cabinet facts hold one. THE WORD "CABINET" NAMES THAT BLOCK OF THE CARD AND NOTHING ELSE: never call this season's honours a cabinet, and on a comparison (which has no Cabinet facts) do not use the word at all.
 
+WHAT THE OTHER CARD DOES NOT HOLD IS CHECKED TOO. Name a tag or honour as one side's alone, or as missing from the other card ("which Ronaldo's card does not carry", "sits on his card alone among the two"), ONLY when the list holds it for one side and not the other. A tag or honour BOTH cards hold may never be called one side's, or said to be absent from the other: the sentence is deleted. Check the two lists before writing "does not hold", "alone", "only", "without" or "lacks" beside a tag or honour.
+
 THE PROOF PANEL IS IN THE FACTS, as the page prints it: on a comparison, goals, assists and shots on target per 90 and goal conversion; on a card, the three rows of the player's position (a defender's tackles, interceptions and blocks). Quote them at the decimals given; "not recorded" means the page prints NR, and you may say so.
 
-A DIMENSION (Goal Threat, Creation, Progression, Defensive) IS A PERCENTILE THE CARD PRINTS AND NOTHING MORE. Never say what it measures or rewards, and never put a skill word beside it (finishing, tackling, passing, pressing, vision, work rate and the like): "Defensive at the 16th percentile" is the whole fact; "Defensive at the 16th, his tackling" is deleted. WHEN THE TWO PLAYERS' POOLS DIFFER (the facts say "among CAM seasons" and "among Winger seasons"), NEVER SET ONE MAN'S PERCENTILE BESIDE THE OTHER'S in one sentence: the page says each is measured against his own peers, not against each other, and a sentence citing a dimension of each is deleted. Write each player's dimensions in his own sentence. A SHELF YEAR IS A SEASON'S LABEL, NOT A DATE, AND THE PAGE PRINTS ONLY THE YEAR: write "dated 2012 on the shelf", never "in 2012", "won in 2012", "from 2012", and never as a season ("2012/13"), which the page does not print. The word "shelf" belongs to a Cabinet fact or an honour fact's own shelf entry; a comparison has no shelf.
+A DIMENSION (Goal Threat, Creation, Progression, Defensive) IS A PERCENTILE THE CARD PRINTS AND NOTHING MORE. Never say what it measures or rewards, and never put a skill word beside it (finishing, tackling, passing, pressing, vision, work rate and the like): "Defensive at the 16th percentile" is the whole fact; "Defensive at the 16th, his tackling" is deleted. RELIABILITY THE SAME: it is a number out of 100 the card prints, and never say what it or a gap in it rests on, reflects or comes from (appearances, fitness, injuries, minutes): "a gap that reflects his 35 appearances" is deleted. WHEN THE TWO PLAYERS' POOLS DIFFER (the facts say "among CAM seasons" and "among Winger seasons"), NEVER SET ONE MAN'S PERCENTILE BESIDE THE OTHER'S in one sentence: the page says each is measured against his own peers, not against each other, and a sentence citing a dimension of each is deleted. Write each player's dimensions in his own sentence. A SHELF YEAR IS A SEASON'S LABEL, NOT A DATE, AND THE PAGE PRINTS ONLY THE YEAR: write "dated 2012 on the shelf", never "in 2012", "won in 2012", "from 2012", and never as a season ("2012/13"), which the page does not print. The word "shelf" belongs to a Cabinet fact or an honour fact's own shelf entry; a comparison has no shelf.
 
 YOU MAY: restate a fact in your own words; compare cited facts ("the higher Creation", "eleven more goals"); give an opinion or judgement that rests only on cited facts ("the more complete season", citing the dimensions it compares); use the meaning the card itself gives an honour or tag, as quoted in the facts.
 
 YOU MAY NOT state anything the facts do not hold, however true of football: transfers, arrivals or debuts; other seasons, earlier or later clubs, career history; records and firsts; title races, league positions, trophies or awards not in the facts, or a fuller name for an award than the facts give; how strong or difficult a league, team, club or opponent was; managers, team-mates, matches, dates or moments; how a player plays, moves or looks.
 
-CROWNS. A sentence that names, implies or leans towards an overall winner of the comparison, the better season taken whole, is a crown. A lead in one measure, an honour or tag the other does not hold, or a higher figure stated as a figure is NOT a crown and may be written on any pair. ${'{CROWN_RULE}'} A crown must cite P1.
+CROWNS. A sentence that names, implies or leans towards an overall winner of the comparison, the better season taken whole, is a crown. A lead in one measure, an honour or tag the other does not hold, or a higher figure stated as a figure is NOT a crown and may be written on any pair. ${'{CROWN_RULE}'} A crown must cite P1. THE BANNED PHRASES ARE DELETED BY CODE ON EVERY PAIR, whichever side they favour and whatever they describe ("edges fractionally above" on one figure dies too), unless the page's own result line uses the phrase: write "edges", "shades", "takes it" and the rest only when P1 does.
 
 ON A CARD (the notes), THREE MORE RULES, ALL ENFORCED IN CODE:
 - EACH FACT IS CITED BY ONE SENTENCE ONLY. A sentence that cites a fact an earlier sentence already cited is deleted. The exceptions: the identity fact A1, which any sentence naming the club, league or age must cite; the glance line, whose fact may be stated once more in the body; and an honour or tag fact, which a count sentence and its one quotation may both cite. The card copy itself is printed once: a second quotation of the same honour or tag line is deleted. So a figure is stated once and never restated. Write fewer sentences than there are facts. In the honours-and-tags stanza, one honour or tag a sentence, quoted in the card's words.
@@ -451,11 +453,15 @@ function cardAttributes(pack, side) {
   return v;
 }
 function copyLines(pack) { return pack.facts.map(f => (f.text.match(/The card says: "([^"]+)"/) || [])[1]).filter(Boolean); }
-const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\async function judgeDraft(pack, draft, narrow = narrowCheck) {');
+const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, m => '\\' + m);   // FIXED 2026-11-11 (c7): since a24842f the replacement string read '\\async function judgeDraft(...) {', a lost dollar-ampersand in an edit (a replacement STRING expands it to the match; the same slip recurred today and the replacer is a function now), so a copy line with a bracket or a full stop inside it was never stripped and honourRepeatOk's label regexes were wrong for any label with a special character. Latent: no honour label and no tag or honour copy line carries one (counted 2026-11-11).
 function stripCopy(s, pack) {
   let t = s;
   for (const c of copyLines(pack)) for (const p of [c].concat(c.split(/(?<=[.!?])\s+/))) if (p.replace(/[^\p{L}]/gu, '').length >= 8) t = t.replace(new RegExp(esc(p.replace(/[.!?]$/, '')), 'gi'), ' ');
-  return t.replace(/"[^"]*"/g, ' ').replace(/'[^']{12,}'/g, ' ');
+  /*  A SINGLE QUOTE OPENS ONLY AFTER A SPACE OR PUNCTUATION (2026-11-11, c7). The old form blanked everything between two
+      POSSESSIVES ("Salah's Reliability ... above Neymar's 39"), so every rule that reads the stripped text (ranking, gloss,
+      shelf year, honour repeat) was blind to the middle of any sentence with two apostrophes 12 or more characters apart.
+      That, not the wording, is why the c4 gloss rule never saw "a gap that reflects his 35 appearances" in pass 12.  */
+  return t.replace(/"[^"]*"/g, ' ').replace(/(?<![\p{L}\p{N}])'[^']{12,}'(?![\p{L}\p{N}])/gu, ' ');
 }
 function rankingOk(pack, sentence, side) {
   const vals = cardAttributes(pack, side), why = [];
@@ -538,16 +544,18 @@ function crossPoolOk(pack, citedFacts) {
     card prints (goals, assists, shots, tackles on a defender's card) are not in the list: they are facts the number rule
     checks, and a sentence may set them beside a dimension. "Strength" is not in it either: "a genuine strength" is the
     ranking vocabulary rankingOk governs, not a physical attribute (the dry run over passes 6 to 9 caught it once).  */
-const DIM_NAMES = /\b(Goal Threat|Creation|Progression|Defensive)\b/i;
-const GLOSS = /\b(finish(?:ing|er)|tackl(?:ing|er)|pass(?:ing|er)|dribbl(?:ing|er)|press(?:ing|es)|defend(?:ing|er)|defen[cs]e|marking|heading|crossing|carrying|ball[- ]?winning|ball[- ]?carrying|work[- ]?rate|creativity|vision|shooting|scoring|playmaking|link[- ]?up|build[- ]?up|positioning|pace|stamina|distribution|aerial\w*|duel\w*|interception\w*|block(?:s|ing)|recover(?:y|ies))\b/i;
-const EQUATES = /\b(measur(?:es|ed|ing)|reflect(?:s|ed|ing)|captur(?:es|ed|ing)|reward(?:s|ed|ing)|count(?:s|ed|ing)|track(?:s|ed|ing)|driven by|built on|comes from|rooted in|rests on|means|is about|covers|rates|stems from|speaks to|points to|translates)\b/i;
+const DIM_NAMES = /\b(Goal Threat|Creation|Progression|Defensive|Reliability)\b/i;   // Reliability added 2026-11-11 (c7): "a gap that reflects his 35 appearances" (pass 12) named Reliability and the rule did not look
+const GLOSS = /\b(availability|fitness|durability|injur\w*|consisten\w*|finish(?:ing|er)|tackl(?:ing|er)|pass(?:ing|er)|dribbl(?:ing|er)|press(?:ing|es)|defend(?:ing|er)|defen[cs]e|marking|heading|crossing|carrying|ball[- ]?winning|ball[- ]?carrying|work[- ]?rate|creativity|vision|shooting|scoring|playmaking|link[- ]?up|build[- ]?up|positioning|pace|stamina|distribution|aerial\w*|duel\w*|interception\w*|block(?:s|ing)|recover(?:y|ies))\b/i;
+const EQUATES = /\b((?<!\b(?:the|those|these|two|three|four|five|decisive|key|its|his|her|in|by|both) )measur(?:es|ed|ing)(?!\s+(?:at|among|against|by|on)\b)|reflect(?:s|ed|ing)|captur(?:es|ed|ing)|reward(?:s|ed|ing)|count(?:s|ed|ing)|track(?:s|ed|ing)|driven by|built on|comes from|rooted in|rests on|means|is about|covers|rates|stems from|speaks to|points to|translates|down to|thanks to|owes|owed to|explained by|a product of|a function of|because of|underpinned by|a sign of|evidence of|testament to|born of)\b/i;   // widened 2026-11-11 (c7); "measured at 91", "measured among ST seasons" and "the measures the cards print" state the page and are excepted
 function dimensionGlossOk(pack, sentence) {
-  const why = [], t = stripCopy(sentence, pack);
+  const why = []; let t = stripCopy(sentence, pack);
+  for (const n of pack.facts.map(f => (f.text.match(/^Tag: (.+?)\. The card says/) || [])[1]).filter(Boolean)) t = t.replace(new RegExp('(?<![\\p{L}])' + esc(n) + '(?![\\p{L}])', 'gu'), ' ');   // a tag's name is not a skill word: "The Dribbler" beside Reliability (2026-11-11)
   for (const clause of t.split(/;|\b(?:and|while|but|whereas)\b/i)) {
     const d = clause.match(DIM_NAMES); if (!d) continue;
     const g = clause.match(GLOSS), e = clause.match(EQUATES);
-    if (g) why.push(`"${g[1]}" beside ${d[1]}: a dimension is a percentile the card prints, and what it measures is not on the card`);
-    else if (e) why.push(`"${e[1]}" beside ${d[1]}: a dimension is a percentile the card prints, and what it measures or rests on is not on the card`);
+    const what = d[1] === 'Reliability' ? 'Reliability is a number out of 100 the card prints' : 'a dimension is a percentile the card prints';
+    if (g) why.push(`"${g[1]}" beside ${d[1]}: ${what}, and what it measures is not on the card`);
+    else if (e) why.push(`"${e[1]}" beside ${d[1]}: ${what}, and what it measures or rests on is not on the card`);
   }
   return why;
 }
@@ -566,6 +574,53 @@ function shelfYearOk(pack, sentence) {
       if (/^\/\d\d/.test(after)) { why.push(`"${y}${after.slice(0, 3)}" writes the shelf year as a season the page does not print: the shelf prints ${y} and nothing more`); continue; }   // the local proof of 2026-10-28 wrote "covering the 2012/13 season" and the judge was right that no page prints it
       if (/\b(dated|shelf|shelf's|row|entry|cabinet|cabinet's)\b[^.;]{0,24}$/i.test(before) || /^\S*\s+(row|entry|shelf)\b/.test(sentence.slice(m.index + 4, m.index + 16))) continue;
       why.push(`"${before.slice(-12).trim()} ${y}" reads the shelf year as a date: the shelf prints ${y} as a season's label; write it dated on the shelf`);
+    }
+  }
+  return why;
+}
+/* ---------- THE BUILD AFTER c6, c7 (2026-11-11, Lucas: "one restart covers five fixes") ---------- */
+/*  (4) THE BANNED CROWN PHRASES ARE A CODE RULE. "edges" shipped on c5 (De Bruyne's Reliability "edges" Pogba's, passes 10
+    and 11, two Haiku crown reads) and again on 2026-11-11 (Kane's shots on target "edges fractionally above" Salah's): the
+    word was banned in the prompt and the prompt is advisory. A banned phrase is now deleted on every piece, whatever it
+    describes, unless the page's own result line uses it: on a gap-1 separated pair the page prints "edges it", on a
+    photo finish "takes it by a whisker", and the verdict may say what the page says. A card has no result line.  */
+const BANNED_RE = /\b(edges|edged|edging|edge[sd]? (?:it|ahead|in front|past)|shades|shaded|shading|just ahead|the better of the two|takes it|took it|wins the argument|if pushed|on balance|tips it|tipped it|settles (?:this|it))\b/i;
+function crownWordsOk(pack, sentence) {
+  const t = stripCopy(sentence, pack), m = t.match(BANNED_RE); if (!m) return [];
+  if (pack.type === 'verdict' && pack.result && new RegExp('\\b' + esc(m[1]) + '\\b', 'i').test(pack.result)) return [];
+  return [`"${m[1]}" is a crown phrase the page does not use` + (pack.type === 'verdict' ? ` (the result line reads "${pack.result}")` : ' (a card has no comparison)')];
+}
+/*  (5) WHAT THE OTHER CARD DOES NOT HOLD. The citation rule binds what a sentence says a card HAS to a fact on that side;
+    nothing tested what a sentence says the other card LACKS, and the narrow check sees only the cited facts, so "Messi's
+    card includes both The Standard and the Playmaker tag, which Ronaldo's does not carry" (Ronaldo's three tags include
+    The Standard) and Palmer's Playmaker "sits on his card alone among the two" (Foden carries it) both shipped on
+    2026-11-11, two of six pieces, caught by reading and by nothing else. The hole is as old as the writer and surfaces
+    only when both cards share a tag or honour. The rule: on a comparison, a sentence with an absence or exclusivity word
+    (not, never, neither, nor, without, lacks, absent, missing, alone, only, unique, sole, unmatched, cannot) that names
+    a tag or honour BOTH sides hold is deleted. Card copy is stripped first; names match case-sensitively (Complete,
+    Clinical and Provider are also words); the test is per clause split on ";" and ":", so "both carry Goal Machine; only
+    Messi holds Playmaker" lives. A sentence that names a shared tag beside "not" for some other reason is the price.  */
+/*  two shapes of absence: a verb of not-holding takes the shared name before it (a relative clause, "both X and Y, which
+    Ronaldo's does not carry") or just after it; "without", "lacks", "absent from" and "missing from" take only what follows
+    them ("Neymar's The Standard stands without those individual prizes" is about the prizes, and lives)  */
+const ABSENT_VERB = /\b(?:(?:does|do|did|would|will) not(?:\s+(?:hold|carry|have|share|include|possess|list|show|feature|own|boast|print|bear)\b|(?=\s*[,.;]|\s*$))|neither (?:\w+ )?(?:holds|carries|has)\b|nor\b)/i;
+const ABSENT_POST = /\b(?:lacks?|lacking|without|absent from|missing from)\b/i;
+const ABSENT_ONLY = /\b(?:alone (?:among|holds|carries|has|on)\b|(?:card|cards|his|hers) alone\b|only (?:\p{Lu}[\p{L}'-]+ )?(?:holds|carries|has|on)\b|only on\b|unique to\b|exclusive to\b|one side's alone\b)/iu;
+function sharedCopyNames(pack) {
+  const by = { A: new Set(), B: new Set() };
+  for (const f of pack.facts) { const m = f.text.match(/^Tag: (.+?)\. The card says|^Honour this season: (.+?), won/); if (m && by[f.side]) by[f.side].add(m[1] || m[2]); }
+  return [...by.A].filter(n => by.B.has(n));
+}
+function absenceOk(pack, sentence) {
+  if (pack.type !== 'verdict') return [];
+  const shared = sharedCopyNames(pack); if (!shared.length) return [];
+  const why = [], at = (n, txt) => { const m = txt.match(new RegExp('(?<![\\p{L}\\p{N}])' + esc(n) + '(?![\\p{L}\\p{N}])', 'u')); return m ? m.index : -1; };
+  for (const clause of stripCopy(sentence, pack).split(/;|:|\b(?:while|whereas)\b/i)) {
+    const v = clause.match(ABSENT_VERB), p = clause.match(ABSENT_POST), o = clause.match(ABSENT_ONLY);
+    for (const n of shared) {
+      const i = at(n, clause); if (i < 0) continue;
+      const after = (m, span) => m && i > m.index && i < m.index + m[0].length + span;
+      if (o || (v && (i < v.index || after(v, 40))) || after(p, 40)) why.push(`says a card lacks, or one card alone holds, ${n}, which both cards hold`);
     }
   }
   return why;
@@ -624,6 +679,8 @@ async function judgeDraft(pack, draft, narrow = narrowCheck) {
     crossPoolOk(pack, citedFacts).forEach(w => why.push('pools: ' + w));
     dimensionGlossOk(pack, u.s).forEach(w => why.push('dimension: ' + w));
     shelfYearOk(pack, u.s).forEach(w => why.push('shelf year: ' + w));
+    crownWordsOk(pack, u.s).forEach(w => why.push('crown word: ' + w));   // c7, 2026-11-11
+    absenceOk(pack, u.s).forEach(w => why.push('absence: ' + w));        // c7, 2026-11-11
     /*  THE GATE ON A COMPARISON'S OWN-PLAYER PARAGRAPHS (pass 6, 2026-10-26): told the card's ranking rule, the writer ranked
         inside verdicts too, and wrongly ("Progression at the 95th percentile is his strongest dimension" beside a Goal
         Threat at the 97th) in both pieces sample 1 lost. The narrow check caught them; the code now does, against that
@@ -725,6 +782,6 @@ async function runPiece(pack) {
     writer's instructions, the narrow check's and both formats are fingerprinted, so an edit to any of them
     stales every cached verdict and note. CITED_REV is bumped by hand for a change to a CODE rule (a drop rule,
     the share, the crown gate), which the fingerprint cannot see.  */
-const CITED_REV = 'c6';   // c6, 2026-10-28 evening: the conversion gloss struck from the Proof fact (no page prints it); c4, 2026-10-28: the meaning audit's three residues closed (pools, dimension gloss, shelf year); c5, the same day: the minimal number extractor replaces the tokenizer's binding in numbersOk, sums rounded   // c2, 2026-10-26: once-a-fact, quote-once, the ranking gate, the honour-repeat rule, two stanzas; c3, 2026-10-27: the 1 of "Ligue 1" is not a number
+const CITED_REV = 'c7';   // c7, 2026-11-11: the absence rule (a tag or honour both cards hold may not be called one side's), the banned crown phrases in code, Reliability under the gloss rule ("a gap that reflects"), the extractor's ellipsis after a possessive pronoun, the esc helper repaired   // c6, 2026-10-28 evening: the conversion gloss struck from the Proof fact (no page prints it); c4, 2026-10-28: the meaning audit's three residues closed (pools, dimension gloss, shelf year); c5, the same day: the minimal number extractor replaces the tokenizer's binding in numbersOk, sums rounded   // c2, 2026-10-26: once-a-fact, quote-once, the ranking gate, the honour-repeat rule, two stanzas; c3, 2026-10-27: the 1 of "Ligue 1" is not a number
 const RULES_VERSION = CITED_REV + '-' + crypto.createHash('sha256').update(WRITER_SYSTEM + NARROW_SYSTEM + VERDICT_FORMAT + NOTES_FORMAT + REJECT_SHARE).digest('hex').slice(0, 8);
-module.exports = { crossPoolOk, dimensionGlossOk, shelfYearOk, poolsOf, rankingOk, honourRepeatOk, stripCopy, cardAttributes, seasonYearOf, verdictFactsFrom, RULES_VERSION, CITED_REV, WRITER_SYSTEM, verdictFacts, notesFacts, scoreFact, reliabilityFact, nameRe, countsLine, identityFacts, VERDICT_FORMAT, NOTES_FORMAT, writerSystem, factsText, runPiece, judgeDraft, numbersOk, factKind, engagesBothSides, assemble, WRITER_MODEL, CHECK_MODEL, NARROW_SYSTEM };
+module.exports = { crownWordsOk, absenceOk, sharedCopyNames, crossPoolOk, dimensionGlossOk, shelfYearOk, poolsOf, rankingOk, honourRepeatOk, stripCopy, cardAttributes, seasonYearOf, verdictFactsFrom, RULES_VERSION, CITED_REV, WRITER_SYSTEM, verdictFacts, notesFacts, scoreFact, reliabilityFact, nameRe, countsLine, identityFacts, VERDICT_FORMAT, NOTES_FORMAT, writerSystem, factsText, runPiece, judgeDraft, numbersOk, factKind, engagesBothSides, assemble, WRITER_MODEL, CHECK_MODEL, NARROW_SYSTEM };

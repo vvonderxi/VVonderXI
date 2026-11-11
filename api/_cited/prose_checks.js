@@ -269,12 +269,17 @@ function sentencesOf(text) { return clean(text).replace(/(\d)\.(\d)/g, '$1\u0000
 function checkNumbers(prose, ev) {
   const { F, onPage, sides } = pageFigures(ev), flags = [], unbound = [];
   const MN = require('./minimal_numbers.js');
-  for (const sent of sentencesOf(stripTagNames(prose))) {
-    const text = sent.replace(/\u0000/g, '.'), xs = MN.minimalNumbers(text.replace(/"[^"]*"/g, ' " " ')).filter(x => x.unit !== 'ordinal');   // quoted card copy is the page's own words ("one more elite campaign"), not the writer's numbers
+  /*  THE FLAG QUOTES THE SHIPPED SENTENCE (2026-11-11, c7): stripTagNames blanks "The Dribbler" to "that tag" for the checks,
+      and the quote used to be the blanked text, so the pass-11 list read "Playmaker, that tag, Iron Man" and the record
+      called it a wording fault of the writer's; the page printed "The Dribbler". The stripped and the shipped prose split
+      into the same sentences (the replacement carries no punctuation), so the i-th of each is the same sentence.  */
+  const shipped = sentencesOf(prose);
+  for (const [si, sent] of sentencesOf(stripTagNames(prose)).entries()) {
+    const text = sent.replace(/\u0000/g, '.'), shown = String(shipped[si] || sent).replace(/\u0000/g, '.'), xs = MN.minimalNumbers(text.replace(/"[^"]*"/g, ' " " ')).filter(x => x.unit !== 'ordinal');   // quoted card copy is the page's own words ("one more elite campaign"), not the writer's numbers
     for (const n of xs) {
       const others = xs.filter(o => o !== n).map(o => o.value), stated = new Set();
       for (const a of others) for (const b of others) if (a !== b || others.filter(v => v === a).length > 1) { stated.add(Math.round((a + b) * 100) / 100); stated.add(Math.round(Math.abs(a - b) * 100) / 100); }
-      const why = (u, more) => ({ quote: text.trim(), why: `"${n.raw}" ${more}`, kind: 2, check: 'numbers', unit: u });
+      const why = (u, more) => ({ quote: shown.trim(), why: `"${n.raw}" ${more}`, kind: 2, check: 'numbers', unit: u });
       const qual = (text.slice(0, text.indexOf(n.raw)).match(/(over|more than|almost|nearly|roughly|about|around|some|under|close to)\s*$/) || [])[1] || null;
       if (n.unit === 'dimensions') {
         const total = sides.reduce((t, s) => t + Object.keys(s.dims || {}).length, 0);
@@ -314,13 +319,14 @@ function checkMeasures(prose, ev) {
   const keeper = /"keeper":/.test(ev.evidence), flags = [];
   const pageText = [ev.page && ev.page.compare || ''].concat(Object.values((ev.page && ev.page.cards) || {})).join('\n') + '\n' + ev.evidence;
   const text = clean(stripTagNames(prose)).replace(/([A-Za-z])-(?=[A-Za-z])/g, '$1 ');
+  const restore = s => s.replace(/\bthat tag\b/g, 'The Dribbler');   // the quote shows the page's word (2026-11-11): the writer never writes "that tag" itself
   for (const sent of (text.match(/(?:\d\.\d|[^.!?])+[.!?]*/g) || [])) {
     const coverage = COVERAGE.test(sent);
     for (const cl of (sent.match(/(?:\d[.,]\d|[^;,:])+/g) || [])) {
       for (const [re, name, notRecorded] of MEASURES) {
         if (!re.test(cl) || (keeper && name === 'penalties')) continue;
         if (coverage && notRecorded && notRecorded.test(pageText)) continue;
-        flags.push({ quote: cl.trim(), why: `names ${name}, which no page shows`, kind: 2, check: 'measures' }); break;
+        flags.push({ quote: restore(cl.trim()), why: `names ${name}, which no page shows`, kind: 2, check: 'measures' }); break;
       }
     }
   }
